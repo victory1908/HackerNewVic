@@ -1,0 +1,51 @@
+package com.vic.hackernew.Utils;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by vic on 22-Apr-16.
+ */
+public class CustomJsonArrayRequest extends JsonArrayRequest {
+    private Priority mPriority;
+
+    public CustomJsonArrayRequest(int method, String url, JSONArray jsonRequest,
+                                   Response.Listener<JSONArray> listener,
+                                   Response.ErrorListener errorListener) {
+        super(method, url, jsonRequest, listener, errorListener);
+        //this.setShouldCache(true);
+    }
+
+
+    @Override
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json; charset=utf-8");
+        return headers;
+    }
+
+    @Override
+    public RetryPolicy getRetryPolicy() {
+        // here you can write a custom retry policy
+        return super.getRetryPolicy();
+    }
+
+    public void setPriority(Priority priority) {
+        mPriority = priority;
+    }
+
+    @Override
+    public Priority getPriority() {
+        return mPriority == null ? Priority.NORMAL : mPriority;
+    }
+
+}

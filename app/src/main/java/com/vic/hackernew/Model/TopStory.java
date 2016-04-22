@@ -6,12 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * Created by vic on 21-Apr-16.
  */
@@ -20,18 +14,20 @@ public class TopStory {
     private String title;
     private String author;
     private int score;
-    private int[] kids;
-    private int timestamp;
+    private JSONArray kids;
+    private int time;
+    private String url;
 
     public TopStory() {
     }
 
-    public TopStory(int id, String title, String author, int point, int timestamp) {
+    public TopStory(int id, String title, String author, int point, int timestamp,String url) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.score = point;
-        this.timestamp = timestamp;
+        this.time = timestamp;
+        this.url = url;
     }
 
     public String getTitle() {
@@ -58,12 +54,12 @@ public class TopStory {
         this.score = score;
     }
 
-    public int getTimestamp() {
-        return timestamp;
+    public int getTime() {
+        return time;
     }
 
-    public void setTimestamp(int timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(int time) {
+        this.time = time;
     }
 
     public int getId() {
@@ -74,36 +70,34 @@ public class TopStory {
         this.id = id;
     }
 
-    public int[] getKids() {
+    public JSONArray getKids() {
         return kids;
     }
 
-    public void setKids(int[] kids) {
+    public void setKids(JSONArray kids) {
         this.kids = kids;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     // Decodes business json into business model object
     public static TopStory fromJson(JSONObject jsonObject) {
         TopStory topStory = new TopStory();
+
         // Deserialize json into object fields
-        try {
-            topStory.id = jsonObject.getInt(Constant.TAG_ID);
-            topStory.title = jsonObject.getString(Constant.TAG_TITLE);
-            topStory.author = jsonObject.getString(Constant.TAG_AUTHOR);
-            topStory.timestamp = jsonObject.getInt(Constant.TAG_TIMESTAMP);
-
-//            JSONArray kidArray = new JSONArray();
-//            kidArray = jsonObject.getJSONArray(Constant.TAG_KIDS);
-//
-//            for (int i = 0; i <kidArray.length() ; i++) {
-//                topStory.kids[i]=kidArray.getJSONObject(i).getInt()
-//            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
+            topStory.id = jsonObject.optInt(Constant.TAG_ID);
+            topStory.title = jsonObject.optString(Constant.TAG_TITLE);
+            topStory.author = jsonObject.optString(Constant.TAG_AUTHOR);
+            topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
+            topStory.time = jsonObject.optInt(Constant.TAG_TIME);
+            topStory.url=jsonObject.optString(Constant.TAG_URL);
+            topStory.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
         // Return new object
         return topStory;
     }

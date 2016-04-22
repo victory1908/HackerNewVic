@@ -1,32 +1,45 @@
 package com.vic.hackernew.Model;
 
-import java.sql.Timestamp;
+import com.vic.hackernew.Utils.Constant;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by vic on 21-Apr-16.
  */
 public class Comment {
-    private String id;
-    private String content;
+    private int id;
+    private String text;
     private String author;
-    private Timestamp timestamp;
+    private JSONArray kids;
+    private int time;
 
     public Comment() {
     }
 
-    public Comment(String content, String author, Timestamp timestamp) {
+    public Comment(int id, String content, String author, JSONArray kids, int time) {
         this.id = id;
-        this.content = content;
+        this.text = content;
         this.author = author;
-        this.timestamp = timestamp;
+        this.kids = kids;
+        this.time = time;
     }
 
-    public String getContent() {
-        return content;
+    public JSONArray getKids() {
+        return kids;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setKids(JSONArray kids) {
+        this.kids = kids;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getAuthor() {
@@ -37,23 +50,34 @@ public class Comment {
         this.author = author;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public int getTime() {
+        return time;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(int time) {
+        this.time = time;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
+    public static Comment fromJson(JSONObject jsonObject) {
+        Comment comment = new Comment();
 
+        // Deserialize json into object fields
+        comment.id = jsonObject.optInt(Constant.TAG_ID);
+        comment.text = jsonObject.optString(Constant.TAG_TEXT);
+        comment.author = jsonObject.optString(Constant.TAG_AUTHOR);
+        comment.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
+        comment.time = jsonObject.optInt(Constant.TAG_TIME);
+        // Return new object
+        return comment;
+    }
 
 
 }
