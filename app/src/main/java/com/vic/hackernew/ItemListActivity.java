@@ -4,19 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,6 +27,7 @@ import com.vic.hackernew.Utils.Constant;
 import com.vic.hackernew.Utils.CustomJsonArrayRequest;
 import com.vic.hackernew.Utils.CustomJsonObjectRequest;
 import com.vic.hackernew.Utils.CustomVolleyRequest;
+import com.vic.hackernew.Utils.DividerItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,17 +50,14 @@ public class ItemListActivity extends AppCompatActivity {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    public static boolean mTwoPane;
     ProgressBar progressBar;
+    RequestQueue requestQueue;
     private List listTopStoriesId;
     private List<TopStory> topStories;
-
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private TopStoryAdapter adapter;
-
-
-    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +92,8 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new TopStoryAdapter(this, topStories);
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(this, null));
 
 
         if (findViewById(R.id.item_detail_container) != null) {
@@ -109,16 +108,26 @@ public class ItemListActivity extends AppCompatActivity {
         requestQueue = CustomVolleyRequest.getInstance(getApplicationContext()).getRequestQueue();
         listTopStoriesId = new ArrayList();
 
-        getTopStoriesListId(requestQueue);
+        getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
+
+//        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                Toast.makeText(getApplicationContext(),topStories.get(recyclerView.getChildLayoutPosition(v)).getAuthor(),Toast.LENGTH_LONG).show();
+//                return true;
+//            }
+//        });
+
+
 
 
     }
 
 
-    private void getTopStoriesListId(final RequestQueue requestQueue) {
+    private void getTopStoriesListId(final RequestQueue requestQueue, String url) {
 
         progressBar.setVisibility(View.VISIBLE);
-        CustomJsonArrayRequest jsonArrayRequest = new CustomJsonArrayRequest(Request.Method.GET,(Constant.TAG_BASE_URL+Constant.TAG_TOPSTORIES_URL),null,
+        CustomJsonArrayRequest jsonArrayRequest = new CustomJsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray respond) {
@@ -127,7 +136,7 @@ public class ItemListActivity extends AppCompatActivity {
                         for (int i = 0; i <respond.length() ; i++) {
                             try {
 //                                Toast.makeText(getApplicationContext(),Constant.TAG_BASE_URL+"item/"+respond.getInt(i)+".json?print=pretty", Toast.LENGTH_LONG).show();
-                                getTopStoryDetail(requestQueue,(Constant.TAG_BASE_URL+"item/"+respond.getInt(i)+".json?print=pretty"));
+                                getTopStoryDetail(requestQueue, (Constant.TAG_BASE_URL + "item/" + respond.getInt(i) + ".json?print=pretty"), progressBar);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -146,7 +155,7 @@ public class ItemListActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void getTopStoryDetail(RequestQueue requestQueue, String topStoryUrl) {
+    private void getTopStoryDetail(RequestQueue requestQueue, String topStoryUrl, final ProgressBar progressBar) {
 
         progressBar.setVisibility(View.VISIBLE);
         CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,topStoryUrl,null,
@@ -157,20 +166,6 @@ public class ItemListActivity extends AppCompatActivity {
                         TopStory topStory = TopStory.fromJson(respond);
                         topStories.add(topStory);
                         adapter.notifyDataSetChanged();
-//                        Toast.makeText(getApplicationContext(), String.valueOf(topStory.getId()), Toast.LENGTH_LONG).show();
-//                        Toast.makeText(getApplicationContext(), topStory.getAuthor(), Toast.LENGTH_LONG).show();
-//                        Toast.makeText(getApplicationContext(), String.valueOf(topStory.getScore()), Toast.LENGTH_LONG).show();
-//                        Toast.makeText(getApplicationContext(), topStory.getTitle(), Toast.LENGTH_LONG).show();
-//                        Toast.makeText(getApplicationContext(), String.valueOf(topStory.getTime()), Toast.LENGTH_LONG).show();
-//                        if (topStory.getKids()!=null) {
-//                            for (int i = 0; i <topStory.getKids().length() ; i++) {
-//                                try {
-//                                    Toast.makeText(getApplicationContext(), topStory.getKids().get(i).toString(), Toast.LENGTH_LONG).show();
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }
 
                     }
                 },
