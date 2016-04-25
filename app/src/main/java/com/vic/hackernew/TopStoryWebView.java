@@ -1,14 +1,21 @@
 package com.vic.hackernew;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 
 /**
@@ -26,6 +33,10 @@ public class TopStoryWebView extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private WebView webView;
+    ProgressBar progressBar;
+    Handler mIncomingHandler = new Handler(new IncomingHandlerCallback());
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -73,12 +84,83 @@ public class TopStoryWebView extends Fragment {
 
         String topStoryUrl = bundle.getString("topStoryUrl");
 
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        progressBar.setProgress(0);
+        progressBar.setMax(100);
+
         webView = (WebView) view.findViewById(R.id.webView);
 
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        // Reload the old WebView content
+        if (savedInstanceState != null) {
+            webView.restoreState(savedInstanceState);
+        }else // Create the WebView
+        {
+
+            //Webview Setting
+            WebSettings webSettings = webView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setSupportZoom(true);
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setAppCacheEnabled(true);
+            webSettings.setAppCachePath(getContext().getCacheDir().getPath());
+            webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+            webView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setIndeterminate(false);
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+
+            webView.setWebChromeClient(new WebChromeClient() {
+                public void onProgressChanged(WebView view, int progress) {
+                    progressBar.setProgress(progress);
+
+                    if (progress == 100) {
+                        progressBar.setVisibility(View.GONE);
+
+                    } else {
+                        progressBar.setVisibility(View.VISIBLE);
+
+                    }
+                }
+            });
+
+            webView.setOnKeyListener(new View.OnKeyListener() {
+
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (webView.canGoBack()) {
+                            mIncomingHandler.sendEmptyMessage(1);
+                        }else {
+                            getActivity().getSupportFragmentManager().popBackStack();
+
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+
+            });
+        }
+
 
         webView.loadUrl(topStoryUrl);
 
@@ -123,5 +205,21 @@ public class TopStoryWebView extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    class IncomingHandlerCallback implements Handler.Callback {
+
+        @Override
+        public boolean handleMessage(Message message) {
+
+            switch (message.what) {
+                case 1: {
+                    webView.goBack();
+                }
+                break;
+            }
+
+            return true;
+        }
     }
 }

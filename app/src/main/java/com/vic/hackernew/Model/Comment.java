@@ -13,12 +13,12 @@ public class Comment {
     private String text;
     private String author;
     private JSONArray kids;
-    private int time;
+    private long time;
 
     public Comment() {
     }
 
-    public Comment(int id, String content, String author, JSONArray kids, int time) {
+    public Comment(int id, String content, String author, JSONArray kids, long time) {
         this.id = id;
         this.text = content;
         this.author = author;
@@ -50,11 +50,11 @@ public class Comment {
         this.author = author;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
@@ -74,7 +74,7 @@ public class Comment {
         comment.text = jsonObject.optString(Constant.TAG_TEXT);
         comment.author = jsonObject.optString(Constant.TAG_AUTHOR);
         comment.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
-        comment.time = jsonObject.optInt(Constant.TAG_TIME);
+        comment.time = jsonObject.optLong(Constant.TAG_TIME);
         // Return new object
         return comment;
     }

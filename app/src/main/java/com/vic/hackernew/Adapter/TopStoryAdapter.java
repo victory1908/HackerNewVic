@@ -18,10 +18,17 @@ import com.vic.hackernew.ItemListActivity;
 import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.R;
 import com.vic.hackernew.TopStoryWebView;
+import com.vic.hackernew.Utils.DateTimeFunction;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Created by vic on 22-Apr-16.
@@ -52,8 +59,14 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         holder.score.setText(String.valueOf(topStory.getScore()));
         holder.url.setText(topStory.getUrl());
 
-        holder.time.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").
-                format(new Date(topStory.getTime() * 1000)));
+//        holder.time.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").
+//                format(new Date((long) (topStory.getTime() * 1000)))+"test");
+
+        holder.time.setText(DateTimeFunction.formatDateTime(topStory.getTime()));
+
+//        holder.time.setText(formatDate(Long(1308114404722)*1000L));
+
+        Calendar.getInstance();
 
 
 //        holder.time.setText(new DateFormat.getDateTimeInstance(new Date(topStory.getTime() * 1000)));
@@ -92,7 +105,6 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         public final TextView time;
         public final Button url;
         public final View topStory_View;
-        public TopStory topStory;
 
         public ViewHolder(View view) {
             super(view);
@@ -108,7 +120,6 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
             url.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Toast.makeText(context,topStories.get(getLayoutPosition()).getTitle(),Toast.LENGTH_SHORT).show();
                     Bundle bundle = new Bundle();
                     bundle.putString("topStoryUrl", topStories.get(getLayoutPosition()).getUrl());
 
@@ -121,13 +132,10 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                                 .add(R.id.item_detail_container, topStoryWebViewFragment)
                                 .commit();
                     } else {
-//                        Intent intent = new Intent(context, ItemDetailActivity.class);
-//                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
-//                        context.startActivity(intent);
                         topStoryWebViewFragment.setArguments(bundle);
                         ((FragmentActivity) context).getSupportFragmentManager()
                                 .beginTransaction()
-                                .add(R.id.frameLayout, topStoryWebViewFragment)
+                                .add(R.id.frameLayout, topStoryWebViewFragment).addToBackStack(null)
                                 .commit();
                     }
                 }
@@ -176,3 +184,4 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         }
     }
 }
+

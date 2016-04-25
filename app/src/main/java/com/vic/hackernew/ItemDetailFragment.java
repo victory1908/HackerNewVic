@@ -26,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -146,6 +148,12 @@ public class ItemDetailFragment extends Fragment {
 //                    Toast.makeText(getContext(),kidArray.getString(i),Toast.LENGTH_SHORT).show();
                     getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + kidArray.getString(i) + ".json?print=pretty");
                 }
+                requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+                    @Override
+                    public void onRequestFinished(Request<Object> request) {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -175,7 +183,13 @@ public class ItemDetailFragment extends Fragment {
 
                         Comment comment = Comment.fromJson(respond);
                         comments.add(comment);
-                        adapter.notifyDataSetChanged();
+                        Collections.sort(comments, new Comparator<Comment>() {
+                            @Override
+                            public int compare(Comment lhs, Comment rhs) {
+                                return Long.valueOf(lhs.getTime()).compareTo(rhs.getTime());
+                            }
+                        });
+//                        adapter.notifyDataSetChanged();
 
                     }
                 },
@@ -189,4 +203,8 @@ public class ItemDetailFragment extends Fragment {
         //Adding request to the queue
         requestQueue.add(jsonObjectRequest);
     }
+
+
 }
+
+

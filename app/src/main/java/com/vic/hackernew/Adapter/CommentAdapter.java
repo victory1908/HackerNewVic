@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.vic.hackernew.Model.Comment;
 import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.R;
+import com.vic.hackernew.Utils.DateTimeFunction;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -44,8 +45,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.author.setText(comment.getAuthor());
         holder.content.setText(Html.fromHtml(comment.getText()));
 
-        holder.time.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").
-                format(new Date(comment.getTime() * 1000)));
+        holder.time.setText(DateTimeFunction.formatDateTime(comment.getTime()));
 
 
 //        holder.time.setText(new DateFormat.getDateTimeInstance(new Date(comment.getTime() * 1000)));

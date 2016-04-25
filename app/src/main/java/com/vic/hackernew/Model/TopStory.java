@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Comparator;
+
 /**
  * Created by vic on 21-Apr-16.
  */
@@ -15,18 +17,18 @@ public class TopStory {
     private String author;
     private int score;
     private JSONArray kids;
-    private int time;
+    private long time;
     private String url;
 
     public TopStory() {
     }
 
-    public TopStory(int id, String title, String author, int point, int timestamp,String url) {
+    public TopStory(int id, String title, String author, int point, long time,String url) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.score = point;
-        this.time = timestamp;
+        this.time = time;
         this.url = url;
     }
 
@@ -54,11 +56,11 @@ public class TopStory {
         this.score = score;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
@@ -95,7 +97,7 @@ public class TopStory {
             topStory.title = jsonObject.optString(Constant.TAG_TITLE);
             topStory.author = jsonObject.optString(Constant.TAG_AUTHOR);
             topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
-            topStory.time = jsonObject.optInt(Constant.TAG_TIME);
+            topStory.time = jsonObject.optLong(Constant.TAG_TIME);
             topStory.url=jsonObject.optString(Constant.TAG_URL);
             topStory.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
         // Return new object
@@ -119,3 +121,10 @@ public class TopStory {
     }
 
 }
+
+//class TopStoryTime implements Comparator<TopStory> {
+//    @Override
+//    public int compare(TopStory lhs, TopStory rhs) {
+//        return (int) (rhs.getTime()-lhs.getTime());
+//    }
+//}

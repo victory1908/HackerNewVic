@@ -34,7 +34,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.TreeSet;
 
 /**
  * An activity representing a list of Items. This activity
@@ -55,6 +59,9 @@ public class ItemListActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     private List listTopStoriesId;
     private List<TopStory> topStories;
+//    TreeSet<TopStory> topStories;
+
+
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private TopStoryAdapter adapter;
@@ -84,6 +91,12 @@ public class ItemListActivity extends AppCompatActivity {
 //        setupRecyclerView((RecyclerView) recyclerView);
 
         topStories = new ArrayList<>();
+//        topStories = new TreeSet<>(new Comparator<TopStory>() {
+//            @Override
+//            public int compare(TopStory lhs, TopStory rhs) {
+//                return (int) (rhs.getTime()-lhs.getTime());
+//            }
+//        });
 
         recyclerView = (RecyclerView) findViewById(R.id.item_list);
 //        assert recyclerView != null;
@@ -117,6 +130,13 @@ public class ItemListActivity extends AppCompatActivity {
 //                return true;
 //            }
 //        });
+
+        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+            @Override
+            public void onRequestFinished(Request<Object> request) {
+                adapter.notifyDataSetChanged();
+            }
+        });
 
 
 
@@ -164,8 +184,47 @@ public class ItemListActivity extends AppCompatActivity {
                     public void onResponse(JSONObject respond) {
                         progressBar.setVisibility(View.GONE);
                         TopStory topStory = TopStory.fromJson(respond);
-                        topStories.add(topStory);
-                        adapter.notifyDataSetChanged();
+
+                        int index = Collections.binarySearch(topStories,topStory, new Comparator<TopStory>() {
+                            @Override
+                            public int compare(TopStory lhs, TopStory rhs) {
+                                return (int) (rhs.getTime()-lhs.getTime());
+                            }
+
+                            @Override
+                            public boolean equals(Object object) {
+                                return false;
+                            }
+                        });
+                        if (index < 0)
+                            topStories.add(topStory);
+                        else topStories.add(index, topStory);
+
+//                        if (topStories.isEmpty()) {
+//                            topStories.add(topStory);
+//                        }else {
+//                            int index = Collections.binarySearch(topStories,topStory, new Comparator<TopStory>() {
+//                                @Override
+//                                public int compare(TopStory lhs, TopStory rhs) {
+//                                    return (int) (rhs.getTime()-lhs.getTime());
+//                                }
+//
+//                                @Override
+//                                public boolean equals(Object object) {
+//                                    return false;
+//                                }
+//                            });
+//
+//                            topStories.add(index, topStory);
+//                        }
+
+//                        Collections.sort(topStories, new Comparator<TopStory>() {
+//                            @Override
+//                            public int compare(TopStory lhs, TopStory rhs) {
+//                                return (int) (rhs.getTime()-lhs.getTime());
+//                            }
+//                        });
+//                        adapter.notifyDataSetChanged();
 
                     }
                 },
@@ -181,79 +240,79 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(topStories));
-    }
-
-    public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        public SimpleItemRecyclerViewAdapter(List<TopStory> topStories) {
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.topStory = topStories.get(position);
-            holder.title.setText(topStories.get(position).getAuthor());
-            holder.author.setText(topStories.get(position).getTitle());
-            holder.score.setText(topStories.get(position).getScore());
-            holder.time.setText(topStories.get(position).getTime());
-
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putInt(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
-                        ItemDetailFragment fragment = new ItemDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.item_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ItemDetailActivity.class);
-                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
-
-                        context.startActivity(intent);
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return topStories.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView title;
-            public final TextView author;
-            public final TextView score;
-            public final TextView time;
-            public TopStory topStory;
-
-            public ViewHolder(View view) {
-                super(view);
-                mView = view;
-                title = (TextView) view.findViewById(R.id.title);
-                author = (TextView) view.findViewById(R.id.author);
-                score = (TextView) view.findViewById(R.id.score);
-                time = (TextView) view.findViewById(R.id.time);
-            }
-
-            @Override
-            public String toString() {
-                return super.toString() + " '" + author.getText() + "'";
-            }
-        }
-    }
+//    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+//        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(topStories));
+//    }
+//
+//    public class SimpleItemRecyclerViewAdapter
+//            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+//
+//        public SimpleItemRecyclerViewAdapter(List<TopStory> topStories) {
+//        }
+//
+//        @Override
+//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            View view = LayoutInflater.from(parent.getContext())
+//                    .inflate(R.layout.item_list_content, parent, false);
+//            return new ViewHolder(view);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(final ViewHolder holder, int position) {
+//            holder.topStory = topStories.get(position);
+//            holder.title.setText(topStories.get(position).getAuthor());
+//            holder.author.setText(topStories.get(position).getTitle());
+//            holder.score.setText(topStories.get(position).getScore());
+//            holder.time.setText(topStories.get(position).getTime());
+//
+//            holder.mView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (mTwoPane) {
+//                        Bundle arguments = new Bundle();
+//                        arguments.putInt(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
+//                        ItemDetailFragment fragment = new ItemDetailFragment();
+//                        fragment.setArguments(arguments);
+//                        getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.item_detail_container, fragment)
+//                                .commit();
+//                    } else {
+//                        Context context = v.getContext();
+//                        Intent intent = new Intent(context, ItemDetailActivity.class);
+//                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
+//
+//                        context.startActivity(intent);
+//                    }
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return topStories.size();
+//        }
+//
+//        public class ViewHolder extends RecyclerView.ViewHolder {
+//            public final View mView;
+//            public final TextView title;
+//            public final TextView author;
+//            public final TextView score;
+//            public final TextView time;
+//            public TopStory topStory;
+//
+//            public ViewHolder(View view) {
+//                super(view);
+//                mView = view;
+//                title = (TextView) view.findViewById(R.id.title);
+//                author = (TextView) view.findViewById(R.id.author);
+//                score = (TextView) view.findViewById(R.id.score);
+//                time = (TextView) view.findViewById(R.id.time);
+//            }
+//
+//            @Override
+//            public String toString() {
+//                return super.toString() + " '" + author.getText() + "'";
+//            }
+//        }
+//    }
 }
