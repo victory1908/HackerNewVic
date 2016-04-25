@@ -6,12 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Comparator;
-
 /**
  * Created by vic on 21-Apr-16.
  */
-public class TopStory {
+public class TopStory implements Comparable<TopStory> {
     private int id;
     private String title;
     private String author;
@@ -30,6 +28,38 @@ public class TopStory {
         this.score = point;
         this.time = time;
         this.url = url;
+    }
+
+    // Decodes business json into business model object
+    public static TopStory fromJson(JSONObject jsonObject) {
+        TopStory topStory = new TopStory();
+
+        // Deserialize json into object fields
+        topStory.id = jsonObject.optInt(Constant.TAG_ID);
+        topStory.title = jsonObject.optString(Constant.TAG_TITLE);
+        topStory.author = jsonObject.optString(Constant.TAG_AUTHOR);
+        topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
+        topStory.time = jsonObject.optLong(Constant.TAG_TIME);
+        topStory.url = jsonObject.optString(Constant.TAG_URL);
+        topStory.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
+        // Return new object
+        return topStory;
+    }
+
+    public static int[] getListTopStoriesId(JSONArray jsonArray) {
+
+        int[] listTopStoriesId = new int[]{};
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                listTopStoriesId[i] = jsonArray.getJSONObject(i).getInt("");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return listTopStoriesId;
     }
 
     public String getTitle() {
@@ -88,38 +118,10 @@ public class TopStory {
         this.url = url;
     }
 
-    // Decodes business json into business model object
-    public static TopStory fromJson(JSONObject jsonObject) {
-        TopStory topStory = new TopStory();
-
-        // Deserialize json into object fields
-            topStory.id = jsonObject.optInt(Constant.TAG_ID);
-            topStory.title = jsonObject.optString(Constant.TAG_TITLE);
-            topStory.author = jsonObject.optString(Constant.TAG_AUTHOR);
-            topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
-            topStory.time = jsonObject.optLong(Constant.TAG_TIME);
-            topStory.url=jsonObject.optString(Constant.TAG_URL);
-            topStory.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
-        // Return new object
-        return topStory;
+    @Override
+    public int compareTo(TopStory another) {
+        return (int) ((another.getTime()) - this.getTime());
     }
-
-    public static int [] getListTopStoriesId (JSONArray jsonArray){
-
-        int[] listTopStoriesId = new int[]{};
-
-        for (int i = 0; i <jsonArray.length() ; i++) {
-            try {
-                listTopStoriesId[i]=jsonArray.getJSONObject(i).getInt("");
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        return listTopStoriesId;
-    }
-
 }
 
 //class TopStoryTime implements Comparator<TopStory> {

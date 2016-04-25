@@ -4,6 +4,7 @@
     style="@style/AppTheme.NoActionBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:padding="10dp"
     app:cardBackgroundColor="@color/cardview_light_background"
     app:cardCornerRadius="20dp"

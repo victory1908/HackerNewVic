@@ -20,15 +20,8 @@ import com.vic.hackernew.R;
 import com.vic.hackernew.TopStoryWebView;
 import com.vic.hackernew.Utils.DateTimeFunction;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Created by vic on 22-Apr-16.
@@ -57,7 +50,6 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         holder.author.setText(topStory.getAuthor());
         holder.title.setText(topStory.getTitle());
         holder.score.setText(String.valueOf(topStory.getScore()));
-        holder.url.setText(topStory.getUrl());
 
 //        holder.time.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").
 //                format(new Date((long) (topStory.getTime() * 1000)))+"test");

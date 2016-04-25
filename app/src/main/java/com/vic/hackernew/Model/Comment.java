@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by vic on 21-Apr-16.
  */
-public class Comment {
+public class Comment implements Comparable<Comment> {
     private int id;
     private String text;
     private String author;
@@ -24,6 +24,19 @@ public class Comment {
         this.author = author;
         this.kids = kids;
         this.time = time;
+    }
+
+    public static Comment fromJson(JSONObject jsonObject) {
+        Comment comment = new Comment();
+
+        // Deserialize json into object fields
+        comment.id = jsonObject.optInt(Constant.TAG_ID);
+        comment.text = jsonObject.optString(Constant.TAG_TEXT);
+        comment.author = jsonObject.optString(Constant.TAG_AUTHOR);
+        comment.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
+        comment.time = jsonObject.optLong(Constant.TAG_TIME);
+        // Return new object
+        return comment;
     }
 
     public JSONArray getKids() {
@@ -66,18 +79,8 @@ public class Comment {
         this.id = id;
     }
 
-    public static Comment fromJson(JSONObject jsonObject) {
-        Comment comment = new Comment();
-
-        // Deserialize json into object fields
-        comment.id = jsonObject.optInt(Constant.TAG_ID);
-        comment.text = jsonObject.optString(Constant.TAG_TEXT);
-        comment.author = jsonObject.optString(Constant.TAG_AUTHOR);
-        comment.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
-        comment.time = jsonObject.optLong(Constant.TAG_TIME);
-        // Return new object
-        return comment;
+    @Override
+    public int compareTo(Comment another) {
+        return (int) (this.getTime() - another.getTime());
     }
-
-
 }
