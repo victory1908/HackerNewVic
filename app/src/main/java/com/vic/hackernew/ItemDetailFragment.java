@@ -1,6 +1,8 @@
 package com.vic.hackernew;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -67,30 +69,6 @@ public class ItemDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         comments = new ArrayList<>();
-
-//        if (getArguments().containsKey(ARG_ITEM_ID)) {
-//            // Load the Model content specified by the fragment
-//            // arguments. In a real-world scenario, use a Loader
-//            // to load content from a content provider.
-//            Bundle bundle = this.getArguments();
-//            stringTransfer = bundle.getString(ARG_ITEM_ID);
-//            try {
-//                JSONArray kidArray = new JSONArray(stringTransfer);
-//                for (int i = 0; i < kidArray.length() ; i++) {
-//                    Toast.makeText(getContext(),kidArray.getString(i),Toast.LENGTH_SHORT).show();
-//                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL+"item/"+kidArray.getString(i)+".json?print=pretty");
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-////            Activity activity = this.getActivity();
-////            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-////            if (appBarLayout != null) {
-////                appBarLayout.setTitle(stringTransfer);
-////            }
-//        }
     }
 
     @Override
@@ -98,14 +76,11 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.comment_list, container, false);
 
-        // Show the Model content as text in a TextView.
-
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-
 
         comments = new ArrayList<>();
         recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_list);
-//        assert recyclerView != null;
+        assert recyclerView != null;
 
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -117,28 +92,9 @@ public class ItemDetailFragment extends Fragment {
 
         requestQueue = CustomVolleyRequest.getInstance(getContext()).getRequestQueue();
 
-//        getCommentsDetail(requestQueue, Constant.TAG_BASE_URL+"item/"+8952+".json?print=pretty");
-
-//        if (stringTransfer != null) {
-//            try {
-//                commentsId = new JSONArray(stringTransfer);
-//
-//                for (int i = 0; i <comments.size() ; i++) {
-//                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL+"item/"+commentsId.getString(i)+".json?print=pretty");
-////                    Toast.makeText(getContext(),commentsId.getString(i),Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(getContext(),"test",Toast.LENGTH_SHORT).show();
-//                }
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the Model content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
+
             Bundle bundle = this.getArguments();
             stringTransfer = bundle.getString(ARG_ITEM_ID);
             try {
@@ -151,13 +107,12 @@ public class ItemDetailFragment extends Fragment {
             }
 
 
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//            if (appBarLayout != null) {
-//                appBarLayout.setTitle(stringTransfer);
-//            }
+            Activity activity = this.getActivity();
+            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            if (appBarLayout != null) {
+                appBarLayout.setTitle(stringTransfer);
+            }
         }
-
 
         return rootView;
     }
@@ -170,8 +125,6 @@ public class ItemDetailFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject respond) {
                         progressBar.setVisibility(View.GONE);
-
-//                        Toast.makeText(getContext(),respond.toString(),Toast.LENGTH_SHORT).show();
 
                         Comment comment = Comment.fromJson(respond);
                         comments.add(comment);
@@ -190,10 +143,8 @@ public class ItemDetailFragment extends Fragment {
                     }
                 });
         jsonObjectRequest.setPriority(Request.Priority.HIGH);
-        //Adding request to the queue
         requestQueue.add(jsonObjectRequest);
     }
-
 
 }
 

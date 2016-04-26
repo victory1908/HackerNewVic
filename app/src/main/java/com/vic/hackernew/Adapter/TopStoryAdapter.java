@@ -20,7 +20,6 @@ import com.vic.hackernew.R;
 import com.vic.hackernew.TopStoryWebView;
 import com.vic.hackernew.Utils.DateTimeFunction;
 
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,39 +49,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         holder.author.setText(topStory.getAuthor());
         holder.title.setText(topStory.getTitle());
         holder.score.setText(String.valueOf(topStory.getScore()));
-
-//        holder.time.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").
-//                format(new Date((long) (topStory.getTime() * 1000)))+"test");
-
         holder.time.setText(DateTimeFunction.formatDateTime(topStory.getTime()));
-
-//        holder.time.setText(formatDate(Long(1308114404722)*1000L));
-
-        Calendar.getInstance();
-
-
-//        holder.time.setText(new DateFormat.getDateTimeInstance(new Date(topStory.getTime() * 1000)));
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putInt(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
-//                    ItemDetailFragment fragment = new ItemDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.item_detail_container, fragment)
-//                            .commit();
-//                } else {
-//                    Context context = v.getContext();
-//                    Intent intent = new Intent(context, ItemDetailActivity.class);
-//                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
-//
-//                    context.startActivity(intent);
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -91,12 +58,9 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView title;
-        public final TextView author;
-        public final TextView score;
-        public final TextView time;
-        public final Button url;
-        public final View topStory_View;
+        TextView title,author,score,time;
+        Button url;
+        View topStory_View;
 
         public ViewHolder(View view) {
             super(view);
@@ -136,7 +100,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
             topStory_View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Toast.makeText(context,topStories.get(getLayoutPosition()).getAuthor(),Toast.LENGTH_SHORT).show();
+
                     TopStory topStory = topStories.get(getLayoutPosition());
 
                     if (topStory.getKids() != null) {
@@ -154,9 +118,6 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                                     .beginTransaction()
                                     .replace(R.id.item_detail_container, fragment)
                                     .commit();
-//                        getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.topstory_detail_container, fragment)
-//                                .commit();
                         } else {
                             Intent intent = new Intent(context, ItemDetailActivity.class);
                             intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());

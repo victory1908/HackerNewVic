@@ -44,32 +44,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Comment comment = comments.get(position);
         holder.author.setText(comment.getAuthor());
         holder.content.setText(Html.fromHtml(comment.getText()));
-
         holder.time.setText(DateTimeFunction.formatDateTime(comment.getTime()));
-
-
-//        holder.time.setText(new DateFormat.getDateTimeInstance(new Date(comment.getTime() * 1000)));
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putInt(ItemDetailFragment.ARG_ITEM_ID, holder.comment.getId());
-//                    ItemDetailFragment fragment = new ItemDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.item_detail_container, fragment)
-//                            .commit();
-//                } else {
-//                    Context context = v.getContext();
-//                    Intent intent = new Intent(context, ItemDetailActivity.class);
-//                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.comment.getId());
-//
-//                    context.startActivity(intent);
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -78,12 +53,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView author;
-        public final TextView content;
-        public final TextView time;
-        public final Button url;
-        public final View comment_View;
-        public TopStory topStory;
+        TextView author,content,time;
+        Button url;
+        View comment_View;
 
         public ViewHolder(View view) {
             super(view);

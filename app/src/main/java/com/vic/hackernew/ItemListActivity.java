@@ -50,7 +50,6 @@ public class ItemListActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     private List listTopStoriesId;
     private List<TopStory> topStories;
-//    TreeSet<TopStory> topStories;
 
 
     private RecyclerView recyclerView;
@@ -77,20 +76,10 @@ public class ItemListActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
-//        View recyclerView = findViewById(R.id.item_list);
-
-//        setupRecyclerView((RecyclerView) recyclerView);
 
         topStories = new ArrayList<>();
-//        topStories = new TreeSet<>(new Comparator<TopStory>() {
-//            @Override
-//            public int compare(TopStory lhs, TopStory rhs) {
-//                return (int) (rhs.getTime()-lhs.getTime());
-//            }
-//        });
-
         recyclerView = (RecyclerView) findViewById(R.id.item_list);
-//        assert recyclerView != null;
+        assert recyclerView != null;
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -114,29 +103,9 @@ public class ItemListActivity extends AppCompatActivity {
 
         getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
 
-//        recyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                Toast.makeText(getApplicationContext(),topStories.get(recyclerView.getChildLayoutPosition(v)).getAuthor(),Toast.LENGTH_LONG).show();
-//                return true;
-//            }
-//        });
-
-//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-//            @Override
-//            public void onRequestFinished(Request<Object> request) {
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
-
-
-
-
     }
 
-
     private void getTopStoriesListId(final RequestQueue requestQueue, String url) {
-
         progressBar.setVisibility(View.VISIBLE);
         CustomJsonArrayRequest jsonArrayRequest = new CustomJsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -146,7 +115,6 @@ public class ItemListActivity extends AppCompatActivity {
                             topStories.clear();
                         for (int i = 0; i <respond.length() ; i++) {
                             try {
-//                                Toast.makeText(getApplicationContext(),Constant.TAG_BASE_URL+"item/"+respond.getInt(i)+".json?print=pretty", Toast.LENGTH_LONG).show();
                                 getTopStoryDetail(requestQueue, (Constant.TAG_BASE_URL + "item/" + respond.getInt(i) + ".json?print=pretty"), progressBar);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -157,7 +125,6 @@ public class ItemListActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(getApplicationContext(), "Unable to fetch data event Detail: " + error.getMessage(), Toast.LENGTH_LONG).show();
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                         progressBar.setVisibility(View.GONE);
                     }
@@ -177,10 +144,10 @@ public class ItemListActivity extends AppCompatActivity {
                         TopStory topStory = TopStory.fromJson(respond);
 
                         int index = Collections.binarySearch(topStories, topStory);
-                        if (index < 0) index = -index - 1;
+                        if (index < 0) {index = -index - 1;}
                         topStories.add(index, topStory);
                         adapter.notifyItemInserted(index);
-
+                        recyclerView.setHasFixedSize(true);
                     }
                 },
                 new Response.ErrorListener() {
@@ -190,84 +157,6 @@ public class ItemListActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                     }
                 });
-        //Adding request to the queue
         requestQueue.add(jsonObjectRequest);
     }
-
-
-//    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-//        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(topStories));
-//    }
-//
-//    public class SimpleItemRecyclerViewAdapter
-//            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-//
-//        public SimpleItemRecyclerViewAdapter(List<TopStory> topStories) {
-//        }
-//
-//        @Override
-//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(parent.getContext())
-//                    .inflate(R.layout.item_list_content, parent, false);
-//            return new ViewHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(final ViewHolder holder, int position) {
-//            holder.topStory = topStories.get(position);
-//            holder.title.setText(topStories.get(position).getAuthor());
-//            holder.author.setText(topStories.get(position).getTitle());
-//            holder.score.setText(topStories.get(position).getScore());
-//            holder.time.setText(topStories.get(position).getTime());
-//
-//            holder.mView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (mTwoPane) {
-//                        Bundle arguments = new Bundle();
-//                        arguments.putInt(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
-//                        ItemDetailFragment fragment = new ItemDetailFragment();
-//                        fragment.setArguments(arguments);
-//                        getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.item_detail_container, fragment)
-//                                .commit();
-//                    } else {
-//                        Context context = v.getContext();
-//                        Intent intent = new Intent(context, ItemDetailActivity.class);
-//                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.topStory.getId());
-//
-//                        context.startActivity(intent);
-//                    }
-//                }
-//            });
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return topStories.size();
-//        }
-//
-//        public class ViewHolder extends RecyclerView.ViewHolder {
-//            public final View mView;
-//            public final TextView title;
-//            public final TextView author;
-//            public final TextView score;
-//            public final TextView time;
-//            public TopStory topStory;
-//
-//            public ViewHolder(View view) {
-//                super(view);
-//                mView = view;
-//                title = (TextView) view.findViewById(R.id.title);
-//                author = (TextView) view.findViewById(R.id.author);
-//                score = (TextView) view.findViewById(R.id.score);
-//                time = (TextView) view.findViewById(R.id.time);
-//            }
-//
-//            @Override
-//            public String toString() {
-//                return super.toString() + " '" + author.getText() + "'";
-//            }
-//        }
-//    }
 }
