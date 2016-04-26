@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.vic.hackernew.Adapter.CommentAdapter;
 import com.vic.hackernew.Model.Comment;
+import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.Utils.Constant;
 import com.vic.hackernew.Utils.CustomJsonObjectRequest;
 import com.vic.hackernew.Utils.CustomVolleyRequest;
@@ -26,6 +27,7 @@ import com.vic.hackernew.Utils.DividerItemDecoration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,27 +94,39 @@ public class ItemDetailFragment extends Fragment {
 
         requestQueue = CustomVolleyRequest.getInstance(getContext()).getRequestQueue();
 
+        Bundle bundle = this.getArguments();
+        TopStory topStory = bundle.getParcelable("topStory");
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-
-            Bundle bundle = this.getArguments();
-            stringTransfer = bundle.getString(ARG_ITEM_ID);
-            try {
-                JSONArray kidArray = new JSONArray(stringTransfer);
-                for (int i = 0; i < kidArray.length(); i++) {
-                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + kidArray.getString(i) + ".json?print=pretty");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(stringTransfer);
-            }
+        for (int i = 0; i <topStory.getKids().size() ; i++) {
+            getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids().get(i).toString() + ".json?print=pretty");
         }
+
+        Activity activity = this.getActivity();
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(topStory.getTitle());
+        }
+
+//        if (getArguments().containsKey(ARG_ITEM_ID)) {
+//
+//            Bundle bundle = this.getArguments();
+//            stringTransfer = bundle.getString(ARG_ITEM_ID);
+//            try {
+//                JSONArray kidArray = new JSONArray(stringTransfer);
+//                for (int i = 0; i < kidArray.length(); i++) {
+//                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + kidArray.getString(i) + ".json?print=pretty");
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//            Activity activity = this.getActivity();
+//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+//            if (appBarLayout != null) {
+//                appBarLayout.setTitle(stringTransfer);
+//            }
+//        }
 
         return rootView;
     }

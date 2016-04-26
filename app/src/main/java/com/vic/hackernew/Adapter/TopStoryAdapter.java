@@ -20,6 +20,8 @@ import com.vic.hackernew.R;
 import com.vic.hackernew.TopStoryWebView;
 import com.vic.hackernew.Utils.DateTimeFunction;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 /**
@@ -46,7 +48,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         TopStory topStory = topStories.get(position);
-        holder.author.setText(topStory.getAuthor());
+        holder.author.setText(topStory.getBy());
         holder.title.setText(topStory.getTitle());
         holder.score.setText(String.valueOf(topStory.getScore()));
         holder.time.setText(DateTimeFunction.formatDateTime(topStory.getTime()));
@@ -65,7 +67,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         public ViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
-            author = (TextView) view.findViewById(R.id.author);
+            author = (TextView) view.findViewById(R.id.by);
             score = (TextView) view.findViewById(R.id.score);
             time = (TextView) view.findViewById(R.id.time);
             url = (Button) view.findViewById(R.id.url);
@@ -108,8 +110,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                         if (ItemListActivity.mTwoPane) {
                             Bundle arguments = new Bundle();
                             arguments.putString(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
-
-                            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
+                            arguments.putParcelable("topStory",Parcels.wrap(topStory));
 
                             ItemDetailFragment fragment = new ItemDetailFragment();
                             fragment.setArguments(arguments);
@@ -121,6 +122,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                         } else {
                             Intent intent = new Intent(context, ItemDetailActivity.class);
                             intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
+                            intent.putExtra("topStory", Parcels.wrap(topStory));
                             context.startActivity(intent);
                         }
                     } else {

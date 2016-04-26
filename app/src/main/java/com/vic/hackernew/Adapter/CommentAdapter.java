@@ -59,7 +59,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         public ViewHolder(View view) {
             super(view);
-            author = (TextView) view.findViewById(R.id.author);
+            author = (TextView) view.findViewById(R.id.by);
             content = (TextView) view.findViewById(R.id.content);
             time = (TextView) view.findViewById(R.id.time);
             url = (Button) view.findViewById(R.id.url);

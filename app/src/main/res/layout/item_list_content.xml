@@ -55,7 +55,7 @@
             android:textStyle="bold" />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/author"
+            android:id="@+id/by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/author"
+            android:layout_below="@+id/by"
             android:padding="15dp"
             android:text="Score"
             android:textStyle="bold" />
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/author"
+            android:layout_below="@+id/by"
             android:layout_toRightOf="@+id/textView_Author"
             android:padding="15dp" />
 
@@ -137,7 +137,7 @@
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:layout_margin="@dimen/text_margin"-->
-        <!--android:text="author"-->
+        <!--android:text="by"-->
         <!--android:textAppearance="?attr/textAppearanceListItem" />-->
 
     <!--<TextView-->

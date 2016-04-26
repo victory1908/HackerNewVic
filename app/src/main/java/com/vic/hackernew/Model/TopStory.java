@@ -1,22 +1,31 @@
 package com.vic.hackernew.Model;
 
-import com.vic.hackernew.Utils.Constant;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * Created by vic on 21-Apr-16.
  */
+@Parcel
 public class TopStory implements Comparable<TopStory> {
-    private int id;
-    private String title;
-    private String author;
-    private int score;
-    private JSONArray kids;
-    private long time;
-    private String url;
+    int id;
+    String title;
+    String by;
+    int score;
+    List<Integer> kids;
+    long time;
+    String url;
+
+
 
     public TopStory() {
     }
@@ -24,7 +33,7 @@ public class TopStory implements Comparable<TopStory> {
     public TopStory(int id, String title, String author, int point, long time,String url) {
         this.id = id;
         this.title = title;
-        this.author = author;
+        this.by = author;
         this.score = point;
         this.time = time;
         this.url = url;
@@ -34,14 +43,25 @@ public class TopStory implements Comparable<TopStory> {
     public static TopStory fromJson(JSONObject jsonObject) {
         TopStory topStory = new TopStory();
 
-        // Deserialize json into object fields
-        topStory.id = jsonObject.optInt(Constant.TAG_ID);
-        topStory.title = jsonObject.optString(Constant.TAG_TITLE);
-        topStory.author = jsonObject.optString(Constant.TAG_AUTHOR);
-        topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
-        topStory.time = jsonObject.optLong(Constant.TAG_TIME);
-        topStory.url = jsonObject.optString(Constant.TAG_URL);
-        topStory.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
+
+        Type listType = new TypeToken<List<TopStory>>(){}.getType();
+        Gson gson = new GsonBuilder().registerTypeAdapter(listType,new TopStory()).create();
+
+
+//        // Deserialize json into object fields
+//        topStory.id = jsonObject.optInt(Constant.TAG_ID);
+//        topStory.title = jsonObject.optString(Constant.TAG_TITLE);
+//        topStory.by = jsonObject.optString(Constant.TAG_AUTHOR);
+//        topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
+//        topStory.time = jsonObject.optLong(Constant.TAG_TIME);
+//        topStory.url = jsonObject.optString(Constant.TAG_URL);
+
+        topStory.id = gson.fromJson(jsonObject.toString(),,TopStory.class);
+
+//        topStory.url = gson.fromJson(jsonObject,String.class);
+//
+//        topStory.kids = gson.fromJson(Constant.TAG_KIDS,jsonObject,new TypeToken<Integer>(){}.getType());
+
         // Return new object
         return topStory;
     }
@@ -70,12 +90,12 @@ public class TopStory implements Comparable<TopStory> {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getBy() {
+        return by;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setBy(String by) {
+        this.by = by;
     }
 
     public int getScore() {
@@ -102,11 +122,11 @@ public class TopStory implements Comparable<TopStory> {
         this.id = id;
     }
 
-    public JSONArray getKids() {
+    public List<Integer> getKids() {
         return kids;
     }
 
-    public void setKids(JSONArray kids) {
+    public void setKids(List<Integer> kids) {
         this.kids = kids;
     }
 

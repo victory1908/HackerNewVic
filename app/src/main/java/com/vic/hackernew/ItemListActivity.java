@@ -11,10 +11,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.vic.hackernew.Adapter.TopStoryAdapter;
 import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.Utils.Constant;
@@ -103,6 +105,15 @@ public class ItemListActivity extends AppCompatActivity {
 
         getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
 
+//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+//            @Override
+//            public void onRequestFinished(Request<Object> request) {
+//                requestQueue.getCache().clear();
+//                adapter.notifyDataSetChanged();
+//                recyclerView.setHasFixedSize(true);
+//            }
+//        });
+
     }
 
     private void getTopStoriesListId(final RequestQueue requestQueue, String url) {
@@ -115,7 +126,7 @@ public class ItemListActivity extends AppCompatActivity {
                             topStories.clear();
                         for (int i = 0; i <respond.length() ; i++) {
                             try {
-                                getTopStoryDetail(requestQueue, (Constant.TAG_BASE_URL + "item/" + respond.getInt(i) + ".json?print=pretty"), progressBar);
+                                getTopStoryDetail(requestQueue, (Constant.TAG_BASE_URL + "item/" + respond.getInt(i) + ".json?print=pretty"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -133,10 +144,10 @@ public class ItemListActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void getTopStoryDetail(RequestQueue requestQueue, String topStoryUrl, final ProgressBar progressBar) {
+    private void getTopStoryDetail(final RequestQueue requestQueue, final String topStoryUrl) {
 
         progressBar.setVisibility(View.VISIBLE);
-        CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,topStoryUrl,null,
+        final CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,topStoryUrl,null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject respond) {
@@ -145,6 +156,8 @@ public class ItemListActivity extends AppCompatActivity {
 
                         int index = Collections.binarySearch(topStories, topStory);
                         if (index < 0) {index = -index - 1;}
+
+                        requestQueue.getCache().invalidate(topStoryUrl,true);
                         topStories.add(index, topStory);
                         adapter.notifyItemInserted(index);
                         recyclerView.setHasFixedSize(true);
@@ -157,6 +170,7 @@ public class ItemListActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+
         requestQueue.add(jsonObjectRequest);
     }
 }
