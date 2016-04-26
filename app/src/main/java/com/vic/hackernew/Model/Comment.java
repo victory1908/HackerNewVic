@@ -1,8 +1,8 @@
 package com.vic.hackernew.Model;
 
-import com.vic.hackernew.Utils.Constant;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -10,40 +10,43 @@ import org.json.JSONObject;
  */
 public class Comment implements Comparable<Comment> {
     private int id;
-    private String text;
-    private String author;
-    private JSONArray kids;
+    private String text = "";
+    private String by;
+    private int[] kids;
     private long time;
 
     public Comment() {
     }
 
-    public Comment(int id, String content, String author, JSONArray kids, long time) {
+    public Comment(int id, String text, String by, int[] kids, long time) {
         this.id = id;
-        this.text = content;
-        this.author = author;
+        this.text = text;
+        this.by = by;
         this.kids = kids;
         this.time = time;
     }
 
     public static Comment fromJson(JSONObject jsonObject) {
-        Comment comment = new Comment();
+        Gson gson = new GsonBuilder().create();
 
         // Deserialize json into object fields
-        comment.id = jsonObject.optInt(Constant.TAG_ID);
-        comment.text = jsonObject.optString(Constant.TAG_TEXT);
-        comment.author = jsonObject.optString(Constant.TAG_AUTHOR);
-        comment.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
-        comment.time = jsonObject.optLong(Constant.TAG_TIME);
+//        comment.id = jsonObject.optInt(Constant.TAG_ID);
+//        comment.text = jsonObject.optString(Constant.TAG_TEXT);
+//        comment.by = jsonObject.optString(Constant.TAG_AUTHOR);
+//        comment.kids = jsonObject.optJSONArray(Constant.TAG_KIDS);
+//        comment.time = jsonObject.optLong(Constant.TAG_TIME);
+
+        Comment comment = gson.fromJson(jsonObject.toString(), Comment.class);
+
         // Return new object
         return comment;
     }
 
-    public JSONArray getKids() {
+    public int[] getKids() {
         return kids;
     }
 
-    public void setKids(JSONArray kids) {
+    public void setKids(int[] kids) {
         this.kids = kids;
     }
 
@@ -55,12 +58,12 @@ public class Comment implements Comparable<Comment> {
         this.text = text;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getBy() {
+        return by;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setBy(String by) {
+        this.by = by;
     }
 
     public long getTime() {
@@ -81,6 +84,6 @@ public class Comment implements Comparable<Comment> {
 
     @Override
     public int compareTo(Comment another) {
-        return (int) (this.getTime() - another.getTime());
+        return (int) (another.getTime() - this.getTime());
     }
 }

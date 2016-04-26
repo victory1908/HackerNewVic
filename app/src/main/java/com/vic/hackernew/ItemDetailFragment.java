@@ -25,9 +25,7 @@ import com.vic.hackernew.Utils.CustomVolleyRequest;
 import com.vic.hackernew.Utils.DividerItemDecoration;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +53,7 @@ public class ItemDetailFragment extends Fragment {
     List<Comment> comments;
     ProgressBar progressBar;
     RequestQueue requestQueue;
+    TopStory topStory;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private CommentAdapter adapter;
@@ -70,7 +69,7 @@ public class ItemDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        comments = new ArrayList<>();
+
     }
 
     @Override
@@ -79,10 +78,23 @@ public class ItemDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.comment_list, container, false);
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_list);
+
+        Bundle bundle = this.getArguments();
+        topStory = bundle.getParcelable("topStory");
 
         comments = new ArrayList<>();
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_list);
-        assert recyclerView != null;
+
+
+        Activity activity = this.getActivity();
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(topStory.getTitle());
+            appBarLayout.setTitleEnabled(true);
+        }
+
+
+//        assert recyclerView != null;
 
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -92,46 +104,18 @@ public class ItemDetailFragment extends Fragment {
                 new DividerItemDecoration(getContext(), null));
 
 
-        requestQueue = CustomVolleyRequest.getInstance(getContext()).getRequestQueue();
+        Toast.makeText(getContext(), String.valueOf(topStory.getKids().length), Toast.LENGTH_SHORT).show();
 
-        Bundle bundle = this.getArguments();
-        TopStory topStory = bundle.getParcelable("topStory");
+        requestQueue = CustomVolleyRequest.getInstance(this.getContext().getApplicationContext()).getRequestQueue();
 
-        for (int i = 0; i <topStory.getKids().size() ; i++) {
-            getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids().get(i).toString() + ".json?print=pretty");
+        for (int i = 0; i < topStory.getKids().length; i++) {
+            getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids()[i] + ".json?print=pretty");
         }
-
-        Activity activity = this.getActivity();
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-        if (appBarLayout != null) {
-            appBarLayout.setTitle(topStory.getTitle());
-        }
-
-//        if (getArguments().containsKey(ARG_ITEM_ID)) {
-//
-//            Bundle bundle = this.getArguments();
-//            stringTransfer = bundle.getString(ARG_ITEM_ID);
-//            try {
-//                JSONArray kidArray = new JSONArray(stringTransfer);
-//                for (int i = 0; i < kidArray.length(); i++) {
-//                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + kidArray.getString(i) + ".json?print=pretty");
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//            if (appBarLayout != null) {
-//                appBarLayout.setTitle(stringTransfer);
-//            }
-//        }
 
         return rootView;
     }
 
-    private void getCommentsDetail(RequestQueue requestQueue, String commentUrl) {
+    private void getCommentsDetail(final RequestQueue requestQueue, final String commentUrl) {
 
         progressBar.setVisibility(View.VISIBLE);
         CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET, commentUrl, null,
@@ -141,11 +125,14 @@ public class ItemDetailFragment extends Fragment {
                         progressBar.setVisibility(View.GONE);
 
                         Comment comment = Comment.fromJson(respond);
-                        comments.add(comment);
+
                         int index = Collections.binarySearch(comments, comment);
-                        if (index < 0) index = -index - 1;
-                        comments.add(index, comment);
-                        adapter.notifyItemInserted(index);
+                        if (index < 0) {
+                            index = -index - 1;
+                            comments.add(index, comment);
+                            adapter.notifyItemInserted(index);
+//                            adapter.notifyDataSetChanged();
+                        }
 
                     }
                 },

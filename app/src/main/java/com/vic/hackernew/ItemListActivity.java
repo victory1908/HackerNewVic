@@ -11,12 +11,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.vic.hackernew.Adapter.TopStoryAdapter;
 import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.Utils.Constant;
@@ -155,12 +153,16 @@ public class ItemListActivity extends AppCompatActivity {
                         TopStory topStory = TopStory.fromJson(respond);
 
                         int index = Collections.binarySearch(topStories, topStory);
-                        if (index < 0) {index = -index - 1;}
+                        if (index < 0) {
+                            index = -index - 1;
+                            topStories.add(index, topStory);
+                            adapter.notifyItemInserted(index);
+                            recyclerView.setHasFixedSize(true);
+                        }
 
-                        requestQueue.getCache().invalidate(topStoryUrl,true);
-                        topStories.add(index, topStory);
-                        adapter.notifyItemInserted(index);
-                        recyclerView.setHasFixedSize(true);
+//                        requestQueue.getCache().invalidate(topStoryUrl,true);
+//                        adapter.notifyDataSetChanged();
+
                     }
                 },
                 new Response.ErrorListener() {

@@ -20,8 +20,6 @@ import com.vic.hackernew.R;
 import com.vic.hackernew.TopStoryWebView;
 import com.vic.hackernew.Utils.DateTimeFunction;
 
-import org.parceler.Parcels;
-
 import java.util.List;
 
 /**
@@ -110,7 +108,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                         if (ItemListActivity.mTwoPane) {
                             Bundle arguments = new Bundle();
                             arguments.putString(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
-                            arguments.putParcelable("topStory",Parcels.wrap(topStory));
+                            arguments.putParcelable("topStory", topStory);
 
                             ItemDetailFragment fragment = new ItemDetailFragment();
                             fragment.setArguments(arguments);
@@ -122,7 +120,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                         } else {
                             Intent intent = new Intent(context, ItemDetailActivity.class);
                             intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
-                            intent.putExtra("topStory", Parcels.wrap(topStory));
+                            intent.putExtra("topStory", topStory);
                             context.startActivity(intent);
                         }
                     } else {

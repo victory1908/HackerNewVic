@@ -10,12 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.vic.hackernew.Model.Comment;
-import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.R;
 import com.vic.hackernew.Utils.DateTimeFunction;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -40,9 +37,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Comment comment = comments.get(position);
-        holder.author.setText(comment.getAuthor());
+        holder.author.setText(comment.getBy());
         holder.content.setText(Html.fromHtml(comment.getText()));
         holder.time.setText(DateTimeFunction.formatDateTime(comment.getTime()));
     }
