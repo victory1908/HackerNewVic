@@ -1,4 +1,4 @@
-package com.vic.hackernew.Utils;
+package com.vic.hackernew.Decoration;
 
 /**
  * Created by Victory1908 on 22-Apr-16.

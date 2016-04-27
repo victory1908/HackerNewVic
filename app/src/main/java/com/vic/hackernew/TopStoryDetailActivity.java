@@ -2,51 +2,31 @@ package com.vic.hackernew;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.vic.hackernew.Model.TopStory;
+import com.vic.hackernew.Utils.Constant;
 
 
 /**
  * An activity representing a single Item detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link ItemListActivity}.
+ * in a {@link TopStoryListActivity}.
  */
-public class ItemDetailActivity extends AppCompatActivity {
+public class TopStoryDetailActivity extends AppCompatActivity {
 
-    boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_detail);
+        setContentView(R.layout.activity_topstory_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        if (findViewById(R.id.item_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -68,17 +48,14 @@ public class ItemDetailActivity extends AppCompatActivity {
             // using a fragment transaction.
             Bundle arguments = new Bundle();
 
-            TopStory topStory = getIntent().getParcelableExtra("topStory");
+            TopStory topStory = getIntent().getParcelableExtra(Constant.TAG_TOP_STORY);
 
-            arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
+            arguments.putParcelable(Constant.TAG_TOP_STORY, topStory);
 
-            arguments.putParcelable("topStory", topStory);
-
-            ItemDetailFragment fragment = new ItemDetailFragment();
+            TopStoryDetailFragment fragment = new TopStoryDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.item_detail_container, fragment)
+                    .add(R.id.topStory_detail_container, fragment)
                     .commit();
         }
     }
@@ -94,7 +71,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, ItemListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, TopStoryListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

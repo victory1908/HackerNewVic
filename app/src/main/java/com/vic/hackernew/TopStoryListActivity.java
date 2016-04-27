@@ -1,8 +1,7 @@
 package com.vic.hackernew;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,13 +14,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vic.hackernew.Adapter.TopStoryAdapter;
+import com.vic.hackernew.Decoration.DividerItemDecoration;
 import com.vic.hackernew.Model.TopStory;
+import com.vic.hackernew.NetWork.CustomJsonArrayRequest;
+import com.vic.hackernew.NetWork.CustomJsonObjectRequest;
+import com.vic.hackernew.NetWork.CustomVolleyRequest;
 import com.vic.hackernew.Utils.Constant;
-import com.vic.hackernew.Utils.CustomJsonArrayRequest;
-import com.vic.hackernew.Utils.CustomJsonObjectRequest;
-import com.vic.hackernew.Utils.CustomVolleyRequest;
-import com.vic.hackernew.Utils.DividerItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,37 +32,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * An activity representing a list of Items. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
-public class ItemListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    boolean mTwoPane;
+public class TopStoryListActivity extends AppCompatActivity {
+
+    public static boolean mTwoPane;
     ProgressBar progressBar;
     RequestQueue requestQueue;
+    SwipeRefreshLayout swipeContainer;
     private List listTopStoriesId;
     private List<TopStory> topStories;
-
-
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private TopStoryAdapter adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_list);
-        if (findViewById(R.id.item_detail_container) != null) {
+        setContentView(R.layout.activity_topstory_list);
+        if (findViewById(R.id.topStory_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
@@ -69,25 +57,22 @@ public class ItemListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
+        listTopStoriesId = new ArrayList();
+
+        topStories = new ArrayList<>();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
-
-        topStories = new ArrayList<>();
-        recyclerView = (RecyclerView) findViewById(R.id.item_list);
+        recyclerView = (RecyclerView) findViewById(R.id.topStory_list);
         assert recyclerView != null;
+        recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -96,44 +81,25 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, null));
 
-        adapter.setOnItemClickListener(new TopStoryAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int position) {
-                if (itemView==findViewById(R.id.url)) {
-                    Toast.makeText(getApplicationContext(),topStories.get(position).getUrl(),Toast.LENGTH_SHORT).show();
-                }
-                if (itemView==findViewById(R.id.title)) {
-                    Toast.makeText(getApplicationContext(),topStories.get(position).getTitle(),Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-
-
 
         requestQueue = CustomVolleyRequest.getInstance(getApplicationContext()).getRequestQueue();
-        listTopStoriesId = new ArrayList();
 
         getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
 
-//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-//            @Override
-//            public void onRequestFinished(Request<Object> request) {
-//                requestQueue.getCache().clear();
-//                adapter.notifyDataSetChanged();
-//                recyclerView.setHasFixedSize(true);
-//            }
-//        });
-
-//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-//            @Override
-//            public void onRequestFinished(Request<Object> request) {
-//
-//                Toast.makeText(getApplicationContext(),requestQueue.getCache().toString()+"finishList",Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
+                requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+                    @Override
+                    public void onRequestFinished(Request<Object> request) {
+                        if (swipeContainer.isRefreshing()) swipeContainer.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
     }
 
@@ -165,7 +131,7 @@ public class ItemListActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void getTopStoryDetail(final RequestQueue requestQueue, final String topStoryUrl) {
+    private void getTopStoryDetail(RequestQueue requestQueue, String topStoryUrl) {
 
         progressBar.setVisibility(View.VISIBLE);
         final CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET,topStoryUrl,null,
@@ -173,25 +139,21 @@ public class ItemListActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject respond) {
                         progressBar.setVisibility(View.GONE);
-                        TopStory topStory = TopStory.fromJson(respond);
+                        Gson gson = new GsonBuilder().create();
+                        TopStory topStory = gson.fromJson(respond.toString(), TopStory.class);
 
                         int index = Collections.binarySearch(topStories, topStory);
                         if (index < 0) {
                             index = -index - 1;
                             topStories.add(index, topStory);
                             adapter.notifyItemInserted(index);
-                            recyclerView.setHasFixedSize(true);
                         }
-
-//                        requestQueue.getCache().invalidate(topStoryUrl,true);
-//                        adapter.notifyDataSetChanged();
-
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 });

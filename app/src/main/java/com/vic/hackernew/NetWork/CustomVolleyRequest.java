@@ -1,4 +1,4 @@
-package com.vic.hackernew.Utils;
+package com.vic.hackernew.NetWork;
 
 import android.content.Context;
 import android.graphics.Bitmap;

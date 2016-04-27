@@ -1,13 +1,18 @@
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
+
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_detail"
+    android:id="@+id/topStory_detail"
     style="?android:attr/textAppearanceLarge"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="10dp"
     android:textIsSelectable="true"
-    tools:context="com.vic.hackernew.ItemDetailFragment">
+    tools:context=".TopStoryDetailFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -15,5 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
-</RelativeLayout>
+
+        <include layout="@layout/comment_list" />
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
 

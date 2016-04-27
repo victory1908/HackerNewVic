@@ -1,4 +1,4 @@
-package com.vic.hackernew.Utils;
+package com.vic.hackernew.NetWork;
 
 import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;

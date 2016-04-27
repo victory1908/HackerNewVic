@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ItemDetailActivity">
+    tools:context=".TopStoryDetailActivity">
 
     <!--
     This layout is a two-pane layout for the Items
@@ -23,17 +23,23 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/comment_list"
         android:name="com.vic.hackernew.ItemListFragment"
         android:layout_width="@dimen/item_width"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.vic.hackernew.ItemDetailActivity"
-        tools:listitem="@layout/comment_list_content" />
+            tools:context=".TopStoryDetailActivity"
+            tools:listitem="@layout/comment_list_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <FrameLayout
         android:id="@+id/comment_detail_container"

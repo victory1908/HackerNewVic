@@ -49,6 +49,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return comments.size();
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        comments.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items
+    public void addAll(List<Comment> list) {
+        comments.addAll(list);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView author,content,time;
         Button url;
@@ -70,4 +82,5 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             return super.toString() + " '" + author.getText() + "'";
         }
     }
+
 }

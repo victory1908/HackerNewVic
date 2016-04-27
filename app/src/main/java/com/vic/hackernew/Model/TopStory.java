@@ -2,10 +2,6 @@ package com.vic.hackernew.Model;
 
 import android.os.Parcelable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
 
 /**
  * Created by vic on 21-Apr-16.
@@ -25,12 +21,12 @@ public class TopStory implements Parcelable, Comparable<TopStory> {
             return new TopStory[size];
         }
     };
-    String by;
+    String by = "";
     int id;
     int[] kids;
     int score;
     long time;
-    String title;
+    String title = "";
     String url;
 
     public TopStory() {
@@ -56,32 +52,6 @@ public class TopStory implements Parcelable, Comparable<TopStory> {
         this.time = in.readLong();
         this.title = in.readString();
         this.url = in.readString();
-    }
-
-    // Decodes business json into business model object
-    public static TopStory fromJson(JSONObject jsonObject) {
-
-        Gson gson = new GsonBuilder().create();
-        TopStory topStory = gson.fromJson(jsonObject.toString(), TopStory.class);
-
-//        Type listType = new TypeToken<List<TopStory>>(){}.getType();
-//        Gson gson = new GsonBuilder().registerTypeAdapter(listType,new TopStory()).create();
-
-
-//        // Deserialize json into object fields
-//        topStory.id = jsonObject.optInt(Constant.TAG_ID);
-//        topStory.title = jsonObject.optString(Constant.TAG_TITLE);
-//        topStory.by = jsonObject.optString(Constant.TAG_AUTHOR);
-//        topStory.score = jsonObject.optInt(Constant.TAG_SCORE);
-//        topStory.time = jsonObject.optLong(Constant.TAG_TIME);
-//        topStory.url = jsonObject.optString(Constant.TAG_URL);
-
-//        topStory.url = gson.fromJson(jsonObject,String.class);
-//
-//        topStory.kids = gson.fromJson(Constant.TAG_KIDS,jsonObject,new TypeToken<Integer>(){}.getType());
-
-        // Return new object
-        return topStory;
     }
 
     public String getTitle() {

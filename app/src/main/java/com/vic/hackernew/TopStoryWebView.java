@@ -28,51 +28,31 @@ import android.widget.ProgressBar;
  */
 public class TopStoryWebView extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private WebView webView;
+
     ProgressBar progressBar;
-    boolean mTwoPane = false;
     Handler mIncomingHandler = new Handler(new IncomingHandlerCallback());
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private WebView webView = null;
     private OnFragmentInteractionListener mListener;
 
     public TopStoryWebView() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TopStoryWebView.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static TopStoryWebView newInstance(String param1, String param2) {
         TopStoryWebView fragment = new TopStoryWebView();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -80,13 +60,6 @@ public class TopStoryWebView extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_top_story_web_view, container, false);
-        if (view.findViewById(R.id.item_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
 
         Bundle bundle = this.getArguments();
 
@@ -159,9 +132,9 @@ public class TopStoryWebView extends Fragment {
                             mIncomingHandler.sendEmptyMessage(1);
                         }else {
                             if (view.findViewById(R.id.comment_detail_container)!=null){
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container,new ItemDetailFragment()).commit();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.topStory_detail_container, new TopStoryDetailFragment()).commit();
                             }else {
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new ItemDetailFragment()).commit();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new TopStoryDetailFragment()).commit();
                             }
 
                         }
