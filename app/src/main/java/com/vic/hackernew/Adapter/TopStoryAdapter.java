@@ -31,6 +31,20 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
     List<TopStory> topStories;
 
 
+
+    // Define listener member variable
+    private static OnItemClickListener listener;
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+
+
     public TopStoryAdapter(Context context,List<TopStory> topStories) {
         this.context = context;
         this.topStories = topStories;
@@ -62,7 +76,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
         Button url;
         View topStory_View;
 
-        public ViewHolder(View view) {
+        public ViewHolder(final View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
             author = (TextView) view.findViewById(R.id.by);
@@ -72,63 +86,81 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
 
             topStory_View = view.findViewById(R.id.Topstory_View);
 
-
             url.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("topStoryUrl", topStories.get(getLayoutPosition()).getUrl());
-
-                    TopStoryWebView topStoryWebViewFragment = new TopStoryWebView();
-                    topStoryWebViewFragment.setArguments(bundle);
-                    if (ItemListActivity.mTwoPane) {
-
-                        ((FragmentActivity) context).getSupportFragmentManager()
-                                .beginTransaction()
-                                .add(R.id.item_detail_container, topStoryWebViewFragment)
-                                .commit();
-                    } else {
-                        topStoryWebViewFragment.setArguments(bundle);
-                        ((FragmentActivity) context).getSupportFragmentManager()
-                                .beginTransaction()
-                                .add(R.id.frameLayout, topStoryWebViewFragment).addToBackStack(null)
-                                .commit();
-                    }
+                public void onClick(View v) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null)
+                        listener.onItemClick(url, getLayoutPosition());
                 }
             });
 
-            topStory_View.setOnClickListener(new View.OnClickListener() {
+            time.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-
-                    TopStory topStory = topStories.get(getLayoutPosition());
-
-                    if (topStory.getKids() != null) {
-
-                        if (ItemListActivity.mTwoPane) {
-                            Bundle arguments = new Bundle();
-                            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
-                            arguments.putParcelable("topStory", topStory);
-
-                            ItemDetailFragment fragment = new ItemDetailFragment();
-                            fragment.setArguments(arguments);
-
-                            ((FragmentActivity) context).getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.item_detail_container, fragment)
-                                    .commit();
-                        } else {
-                            Intent intent = new Intent(context, ItemDetailActivity.class);
-                            intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, topStory.getKids().toString());
-                            intent.putExtra("topStory", topStory);
-                            context.startActivity(intent);
-                        }
-                    } else {
-                        Toast.makeText(context, "No comment for this article", Toast.LENGTH_SHORT).show();
-                    }
-
+                public void onClick(View v) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null)
+                        listener.onItemClick(time, getLayoutPosition());
                 }
             });
+
+
+
+
+//            url.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("topStoryUrl", topStories.get(getLayoutPosition()).getUrl());
+//
+//                    TopStoryWebView topStoryWebViewFragment = new TopStoryWebView();
+//                    topStoryWebViewFragment.setArguments(bundle);
+//                    if (view.findViewById(R.id.comment_detail_container)!=null) {
+//
+//                        ((FragmentActivity) context).getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.item_detail_container, topStoryWebViewFragment).addToBackStack(null)
+//                                .commit();
+//                    } else {
+//                        topStoryWebViewFragment.setArguments(bundle);
+//                        ((FragmentActivity) context).getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.frameLayout, topStoryWebViewFragment).addToBackStack(null)
+//                                .commit();
+//                    }
+//                }
+//            });
+//
+//            topStory_View.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                    TopStory topStory = topStories.get(getLayoutPosition());
+//
+//                    if (topStory.getKids() != null) {
+//
+//                        if (view.findViewById(R.id.comment_detail_container)!=null) {
+//                            Bundle arguments = new Bundle();
+//                            arguments.putParcelable("topStory", topStory);
+//
+//                            ItemDetailFragment fragment = new ItemDetailFragment();
+//                            fragment.setArguments(arguments);
+//
+//                            ((FragmentActivity) context).getSupportFragmentManager()
+//                                    .beginTransaction()
+//                                    .replace(R.id.item_detail_container, fragment)
+//                                    .commit();
+//                        } else {
+//                            Intent intent = new Intent(context, ItemDetailActivity.class);
+//                            intent.putExtra("topStory", topStory);
+//                            context.startActivity(intent);
+//                        }
+//                    } else {
+//                        Toast.makeText(context, "No comment for this article", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                }
+//            });
         }
 
         @Override
@@ -136,5 +168,8 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
             return super.toString() + " '" + author.getText() + "'";
         }
     }
+
+
+
 }
 

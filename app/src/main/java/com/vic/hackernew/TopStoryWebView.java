@@ -34,6 +34,7 @@ public class TopStoryWebView extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private WebView webView;
     ProgressBar progressBar;
+    boolean mTwoPane = false;
     Handler mIncomingHandler = new Handler(new IncomingHandlerCallback());
 
 
@@ -78,7 +79,14 @@ public class TopStoryWebView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_top_story_web_view, container, false);
+        final View view = inflater.inflate(R.layout.fragment_top_story_web_view, container, false);
+        if (view.findViewById(R.id.item_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
 
         Bundle bundle = this.getArguments();
 
@@ -150,7 +158,11 @@ public class TopStoryWebView extends Fragment {
                         if (webView.canGoBack()) {
                             mIncomingHandler.sendEmptyMessage(1);
                         }else {
-                            getActivity().getSupportFragmentManager().popBackStack();
+                            if (view.findViewById(R.id.comment_detail_container)!=null){
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container,new ItemDetailFragment()).commit();
+                            }else {
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new ItemDetailFragment()).commit();
+                            }
 
                         }
                         return true;

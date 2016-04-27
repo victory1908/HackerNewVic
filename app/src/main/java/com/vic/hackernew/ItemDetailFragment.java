@@ -112,6 +112,16 @@ public class ItemDetailFragment extends Fragment {
             getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids()[i] + ".json?print=pretty");
         }
 
+//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+//            @Override
+//            public void onRequestFinished(Request<Object> request) {
+//
+//                Toast.makeText(getContext(),requestQueue.getCache().toString()+"finish",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),"finish detail",Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+
         return rootView;
     }
 
@@ -124,6 +134,8 @@ public class ItemDetailFragment extends Fragment {
                     public void onResponse(JSONObject respond) {
                         progressBar.setVisibility(View.GONE);
 
+//                        Toast.makeText(getContext(),requestQueue.getCache().toString()+"in",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(),respond.toString()+"in",Toast.LENGTH_SHORT).show();
                         Comment comment = Comment.fromJson(respond);
 
                         int index = Collections.binarySearch(comments, comment);

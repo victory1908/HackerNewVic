@@ -45,7 +45,7 @@ public class ItemListActivity extends AppCompatActivity {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    public static boolean mTwoPane;
+    boolean mTwoPane;
     ProgressBar progressBar;
     RequestQueue requestQueue;
     private List listTopStoriesId;
@@ -56,10 +56,18 @@ public class ItemListActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private TopStoryAdapter adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+        if (findViewById(R.id.item_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,14 +96,20 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, null));
 
+        adapter.setOnItemClickListener(new TopStoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                if (itemView==findViewById(R.id.url)) {
+                    Toast.makeText(getApplicationContext(),topStories.get(position).getUrl(),Toast.LENGTH_SHORT).show();
+                }
+                if (itemView==findViewById(R.id.title)) {
+                    Toast.makeText(getApplicationContext(),topStories.get(position).getTitle(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-        if (findViewById(R.id.item_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
+
+
 
 
         requestQueue = CustomVolleyRequest.getInstance(getApplicationContext()).getRequestQueue();
@@ -109,6 +123,15 @@ public class ItemListActivity extends AppCompatActivity {
 //                requestQueue.getCache().clear();
 //                adapter.notifyDataSetChanged();
 //                recyclerView.setHasFixedSize(true);
+//            }
+//        });
+
+//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+//            @Override
+//            public void onRequestFinished(Request<Object> request) {
+//
+//                Toast.makeText(getApplicationContext(),requestQueue.getCache().toString()+"finishList",Toast.LENGTH_SHORT).show();
+//
 //            }
 //        });
 
