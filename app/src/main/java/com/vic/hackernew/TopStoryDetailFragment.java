@@ -66,7 +66,7 @@ public class TopStoryDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.topstory_detail, container, false);
 
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipeContainer);
 
 
         Bundle bundle = this.getArguments();
@@ -86,7 +86,7 @@ public class TopStoryDetailFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_list);
         assert recyclerView != null;
 
-        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new CommentAdapter(getContext(), comments);
@@ -102,21 +102,21 @@ public class TopStoryDetailFragment extends Fragment {
         }
 
 //         Setup refresh listener which triggers new data loading
-//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                adapter.clear();
-//                for (int i = 0; i < topStory.getKids().length; i++) {
-//                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids()[i] + ".json?print=pretty");
-//                }
-//                requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-//                    @Override
-//                    public void onRequestFinished(Request<Object> request) {
-//                        if (swipeContainer.isRefreshing())swipeContainer.setRefreshing(false);
-//                    }
-//                });
-//            }
-//        });
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                for (int i = 0; i < topStory.getKids().length; i++) {
+                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids()[i] + ".json?print=pretty");
+                }
+                requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+                    @Override
+                    public void onRequestFinished(Request<Object> request) {
+                        if (swipeContainer.isRefreshing())swipeContainer.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         return rootView;
     }

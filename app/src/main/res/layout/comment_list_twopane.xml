@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -23,23 +24,19 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipeContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/comment_list"
-        android:name="com.vic.hackernew.ItemListFragment"
-        android:layout_width="@dimen/item_width"
-        android:layout_height="match_parent"
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/comment_list"
+            android:name="com.vic.hackernew.ItemListFragment"
+            android:layout_width="@dimen/item_width"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-        app:layoutManager="LinearLayoutManager"
+            app:layoutManager="LinearLayoutManager"
             tools:context=".TopStoryDetailActivity"
             tools:listitem="@layout/comment_list_content" />
-    </android.support.v4.widget.SwipeRefreshLayout>
 
     <FrameLayout
         android:id="@+id/comment_detail_container"
@@ -47,4 +44,4 @@
         android:layout_height="match_parent"
         android:layout_weight="3" />
 
-</LinearLayout>
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.vic.hackernew;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -46,6 +47,7 @@ public class TopStoryDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+
             Bundle arguments = new Bundle();
 
             TopStory topStory = getIntent().getParcelableExtra(Constant.TAG_TOP_STORY);
