@@ -1,7 +1,6 @@
 package com.vic.hackernew.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +13,7 @@ import android.widget.Toast;
 
 import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.R;
-import com.vic.hackernew.TopStoryDetailActivity;
 import com.vic.hackernew.TopStoryDetailFragment;
-import com.vic.hackernew.TopStoryListActivity;
 import com.vic.hackernew.TopStoryWebView;
 import com.vic.hackernew.Utils.Constant;
 import com.vic.hackernew.Utils.DateTimeFunction;
@@ -94,18 +91,24 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
 
                     TopStoryWebView topStoryWebViewFragment = new TopStoryWebView();
                     topStoryWebViewFragment.setArguments(bundle);
-                    if (TopStoryListActivity.mTwoPane) {
-                        ((FragmentActivity) context).getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.topStory_detail_container, topStoryWebViewFragment).addToBackStack(null)
-                                .commit();
-                    } else {
-                        topStoryWebViewFragment.setArguments(bundle);
-                        ((FragmentActivity) context).getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.frameLayout, topStoryWebViewFragment).addToBackStack(null)
-                                .commit();
-                    }
+
+                    ((FragmentActivity) context).getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.topStoryframeLayout, topStoryWebViewFragment).addToBackStack(null)
+                            .commit();
+
+//                    if (TopStoryListActivity.mTwoPane) {
+//                        ((FragmentActivity) context).getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.topStory_detail_container, topStoryWebViewFragment).addToBackStack(null)
+//                                .commit();
+//                    } else {
+//                        topStoryWebViewFragment.setArguments(bundle);
+//                        ((FragmentActivity) context).getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.frameLayout, topStoryWebViewFragment).addToBackStack(null)
+//                                .commit();
+//                    }
                 }
             });
 
@@ -117,22 +120,33 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
 
                     if (topStory.getKids() != null) {
 
-                        if (TopStoryListActivity.mTwoPane) {
-                            Bundle arguments = new Bundle();
-                            arguments.putParcelable(Constant.TAG_TOP_STORY, topStory);
+                        Bundle arguments = new Bundle();
+                        arguments.putParcelable(Constant.TAG_TOP_STORY, topStory);
 
-                            TopStoryDetailFragment fragment = new TopStoryDetailFragment();
-                            fragment.setArguments(arguments);
+                        TopStoryDetailFragment fragment = new TopStoryDetailFragment();
+                        fragment.setArguments(arguments);
 
-                            ((FragmentActivity) context).getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .replace(R.id.topStory_detail_container, fragment)
-                                    .commit();
-                        } else {
-                            Intent intent = new Intent(context, TopStoryDetailActivity.class);
-                            intent.putExtra(Constant.TAG_TOP_STORY, topStory);
-                            context.startActivity(intent);
-                        }
+                        ((FragmentActivity) context).getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.topStoryframeLayout, fragment, "topStoryDetail").addToBackStack("topStoryDetail")
+                                .commit();
+
+//                        if (TopStoryListActivity.mTwoPane) {
+//                            Bundle arguments = new Bundle();
+//                            arguments.putParcelable(Constant.TAG_TOP_STORY, topStory);
+//
+//                            TopStoryDetailFragment fragment = new TopStoryDetailFragment();
+//                            fragment.setArguments(arguments);
+//
+//                            ((FragmentActivity) context).getSupportFragmentManager()
+//                                    .beginTransaction()
+//                                    .replace(R.id.topStory_detail_container, fragment)
+//                                    .commit();
+//                        } else {
+//                            Intent intent = new Intent(context, TopStoryDetailActivity.class);
+//                            intent.putExtra(Constant.TAG_TOP_STORY, topStory);
+//                            context.startActivity(intent);
+//                        }
                     } else {
                         Toast.makeText(context, "No comment for this article", Toast.LENGTH_SHORT).show();
                     }
@@ -141,7 +155,6 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
             });
         }
     }
-
 
 }
 

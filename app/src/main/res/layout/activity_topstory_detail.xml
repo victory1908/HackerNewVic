@@ -35,17 +35,13 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
-
-
-
     </android.support.design.widget.AppBarLayout>
 
-
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        android:id="@+id/swipeContainer"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/topStory_detail_nested_scrollview"
@@ -59,6 +55,5 @@
         </FrameLayout>
     </android.support.v4.widget.NestedScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

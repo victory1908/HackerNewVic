@@ -134,7 +134,7 @@ public class TopStoryWebView extends Fragment {
                             if (view.findViewById(R.id.comment_detail_container)!=null){
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.topStory_detail_container, new TopStoryDetailFragment()).commit();
                             }else {
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new TopStoryDetailFragment()).commit();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.topStoryframeLayout, new TopStoryDetailFragment()).commit();
                             }
 
                         }

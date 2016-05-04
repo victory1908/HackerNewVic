@@ -17,6 +17,7 @@ public class Constant {
     public static String TAG_TOPSTORIES_URL = "topstories.json";
 
     public static String TAG_TOP_STORY = "topStory";
+    public static String TAG_COMMENT = "comment";
 
 
 

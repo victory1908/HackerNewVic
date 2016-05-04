@@ -23,7 +23,6 @@ import com.google.gson.GsonBuilder;
 import com.vic.hackernew.Adapter.CommentAdapter;
 import com.vic.hackernew.Decoration.DividerItemDecoration;
 import com.vic.hackernew.Model.Comment;
-import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.NetWork.CustomJsonObjectRequest;
 import com.vic.hackernew.NetWork.CustomVolleyRequest;
 import com.vic.hackernew.Utils.Constant;
@@ -34,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TopStoryDetailFragment extends Fragment {
+public class CommentDetailFragment extends Fragment {
 
-    List<Comment> comments;
+    List<Comment> replies;
     ProgressBar progressBar;
     RequestQueue requestQueue;
-    TopStory topStory;
+    Comment comment;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     CommentAdapter adapter;
@@ -51,7 +50,7 @@ public class TopStoryDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public TopStoryDetailFragment() {
+    public CommentDetailFragment() {
     }
 
     @Override
@@ -72,26 +71,26 @@ public class TopStoryDetailFragment extends Fragment {
             return rootView;
         }
 
-        rootView = inflater.inflate(R.layout.topstory_detail, container, false);
+        rootView = inflater.inflate(R.layout.reply_detail, container, false);
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
 
 
         Bundle bundle = this.getArguments();
-        topStory = bundle.getParcelable(Constant.TAG_TOP_STORY);
+        comment = bundle.getParcelable(Constant.TAG_COMMENT);
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 //        AppCompatActivity activity = (AppCompatActivity) getActivity();
 //        activity.setSupportActionBar(toolbar);
-        toolbar.setTitle(topStory.getTitle());
+        toolbar.setTitle(comment.getBy());
 
-        comments = new ArrayList<>();
+        replies = new ArrayList<>();
 
         Activity activity = this.getActivity();
         CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
-            appBarLayout.setTitle(topStory.getTitle());
+            appBarLayout.setTitle(comment.getBy());
             appBarLayout.setTitleEnabled(true);
         }
 
@@ -103,7 +102,7 @@ public class TopStoryDetailFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new CommentAdapter(getContext(), comments);
+        adapter = new CommentAdapter(getContext(), replies);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(getContext(), null));
@@ -111,8 +110,8 @@ public class TopStoryDetailFragment extends Fragment {
 
         requestQueue = CustomVolleyRequest.getInstance(this.getContext().getApplicationContext()).getRequestQueue();
 
-        for (int i = 0; i < topStory.getKids().length; i++) {
-            getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids()[i] + ".json?print=pretty");
+        for (int i = 0; i < comment.getKids().length; i++) {
+            getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + comment.getKids()[i] + ".json?print=pretty");
         }
 
 //         Setup refresh listener which triggers new data loading
@@ -120,13 +119,13 @@ public class TopStoryDetailFragment extends Fragment {
             @Override
             public void onRefresh() {
                 adapter.clear();
-                for (int i = 0; i < topStory.getKids().length; i++) {
-                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + topStory.getKids()[i] + ".json?print=pretty");
+                for (int i = 0; i < comment.getKids().length; i++) {
+                    getCommentsDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + comment.getKids()[i] + ".json?print=pretty");
                 }
                 requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
                     @Override
                     public void onRequestFinished(Request<Object> request) {
-                        if (swipeContainer.isRefreshing())swipeContainer.setRefreshing(false);
+                        if (swipeContainer.isRefreshing()) swipeContainer.setRefreshing(false);
                     }
                 });
             }
@@ -147,11 +146,11 @@ public class TopStoryDetailFragment extends Fragment {
                         Gson gson = new GsonBuilder().create();
                         Comment comment = gson.fromJson(respond.toString(), Comment.class);
 
-                        int index = Collections.binarySearch(comments, comment);
+                        int index = Collections.binarySearch(replies, comment);
                         if (index < 0) {
                             index = -index - 1;
-                            int prevSize = comments.size();
-                            comments.add(index, comment);
+                            int prevSize = replies.size();
+                            replies.add(index, comment);
 
 //                            if (comment.getKids()!=null){
 //                                replies.clear();
@@ -161,7 +160,7 @@ public class TopStoryDetailFragment extends Fragment {
 //                            }
 
 //                            adapter.notifyItemInserted(index);
-                            adapter.notifyItemRangeInserted(prevSize, comments.size() - prevSize);
+                            adapter.notifyItemRangeInserted(prevSize, replies.size() - prevSize);
                         }
 
                     }
@@ -232,11 +231,6 @@ public class TopStoryDetailFragment extends Fragment {
 //        });
 //    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        toolbar.setTitle(topStory.getTitle());
-    }
 
 }
 

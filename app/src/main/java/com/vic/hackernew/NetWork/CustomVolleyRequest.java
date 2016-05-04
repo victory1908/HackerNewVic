@@ -55,6 +55,7 @@ public class CustomVolleyRequest {
             Cache cache = new DiskBasedCache(context.getCacheDir(), 10 * 1024 * 1024);
             Network network = new BasicNetwork(new HurlStack());
             requestQueue = new RequestQueue(cache, network);
+
             requestQueue.start();
         }
         return requestQueue;
