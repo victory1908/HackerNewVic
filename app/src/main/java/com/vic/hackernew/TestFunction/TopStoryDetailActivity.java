@@ -1,15 +1,17 @@
-package com.vic.hackernew;
+package com.vic.hackernew.TestFunction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.vic.hackernew.Model.TopStory;
+import com.vic.hackernew.R;
+import com.vic.hackernew.TopStoryDetailFragment;
+import com.vic.hackernew.TopStoryListActivity;
 import com.vic.hackernew.Utils.Constant;
 
 

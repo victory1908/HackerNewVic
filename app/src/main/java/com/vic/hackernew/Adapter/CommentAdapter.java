@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,8 +71,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         TextView author, content, time;
         Button reply;
         View comment_View;
-        FrameLayout reply_frameLayout;
-//        NestedScrollView reply_nestedScrollView;
 
 
         public ViewHolder(View view) {
@@ -84,16 +81,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             reply = (Button) view.findViewById(R.id.reply);
 
             comment_View = view.findViewById(R.id.comment_View);
-            reply_frameLayout = (FrameLayout) view.findViewById(R.id.reply_frameLayout);
-//            reply_nestedScrollView = (NestedScrollView)view.findViewById(R.id.reply_nestedScrollView);
-            reply_frameLayout.setVisibility(View.GONE);
-//            reply_nestedScrollView.setVisibility(View.GONE);
 
             reply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    if (reply_frameLayout.getVisibility() == View.GONE) {
 
                         Comment comment = comments.get(getLayoutPosition());
                         if (comment.getKids() != null) {
@@ -106,20 +98,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
                             ((FragmentActivity) context).getSupportFragmentManager()
                                     .beginTransaction()
-                                    .replace(R.id.reply_frameLayout, fragment, "commentDetail")
+                                    .replace(R.id.topStory_detail, fragment, "commentDetail").addToBackStack(null)
                                     .commit();
-
-                            reply_frameLayout.getLayoutParams().height = comment.getKids().length * 1000;
-                            reply_frameLayout.setVisibility(View.VISIBLE);
-//                            reply_nestedScrollView.setVisibility(View.VISIBLE);
 
                         } else {
                             Toast.makeText(context, "No reply for this comment", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        reply_frameLayout.setVisibility(View.GONE);
-//                        reply_nestedScrollView.setVisibility(View.GONE);
-                    }
 
                 }
             });

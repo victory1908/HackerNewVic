@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.vic.hackernew.Model.TopStory;
 import com.vic.hackernew.R;
 import com.vic.hackernew.TopStoryDetailFragment;
+import com.vic.hackernew.TopStoryListActivity;
 import com.vic.hackernew.TopStoryWebView;
 import com.vic.hackernew.Utils.Constant;
 import com.vic.hackernew.Utils.DateTimeFunction;
@@ -92,23 +93,18 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                     TopStoryWebView topStoryWebViewFragment = new TopStoryWebView();
                     topStoryWebViewFragment.setArguments(bundle);
 
-                    ((FragmentActivity) context).getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.topStoryframeLayout, topStoryWebViewFragment).addToBackStack(null)
-                            .commit();
-
-//                    if (TopStoryListActivity.mTwoPane) {
-//                        ((FragmentActivity) context).getSupportFragmentManager()
-//                                .beginTransaction()
-//                                .replace(R.id.topStory_detail_container, topStoryWebViewFragment).addToBackStack(null)
-//                                .commit();
-//                    } else {
-//                        topStoryWebViewFragment.setArguments(bundle);
-//                        ((FragmentActivity) context).getSupportFragmentManager()
-//                                .beginTransaction()
-//                                .replace(R.id.frameLayout, topStoryWebViewFragment).addToBackStack(null)
-//                                .commit();
-//                    }
+                    if (TopStoryListActivity.mTwoPane) {
+                        ((FragmentActivity) context).getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.topStory_detail_container, topStoryWebViewFragment).addToBackStack(null)
+                                .commit();
+                    } else {
+                        topStoryWebViewFragment.setArguments(bundle);
+                        ((FragmentActivity) context).getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.topStoryframeLayout, topStoryWebViewFragment).addToBackStack(null)
+                                .commit();
+                    }
                 }
             });
 
@@ -126,27 +122,19 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryAdapter.ViewHo
                         TopStoryDetailFragment fragment = new TopStoryDetailFragment();
                         fragment.setArguments(arguments);
 
-                        ((FragmentActivity) context).getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.topStoryframeLayout, fragment, "topStoryDetail").addToBackStack("topStoryDetail")
-                                .commit();
 
-//                        if (TopStoryListActivity.mTwoPane) {
-//                            Bundle arguments = new Bundle();
-//                            arguments.putParcelable(Constant.TAG_TOP_STORY, topStory);
-//
-//                            TopStoryDetailFragment fragment = new TopStoryDetailFragment();
-//                            fragment.setArguments(arguments);
-//
-//                            ((FragmentActivity) context).getSupportFragmentManager()
-//                                    .beginTransaction()
-//                                    .replace(R.id.topStory_detail_container, fragment)
-//                                    .commit();
-//                        } else {
-//                            Intent intent = new Intent(context, TopStoryDetailActivity.class);
-//                            intent.putExtra(Constant.TAG_TOP_STORY, topStory);
-//                            context.startActivity(intent);
-//                        }
+                        if (TopStoryListActivity.mTwoPane) {
+
+                            ((FragmentActivity) context).getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.topStory_detail_container, fragment)
+                                    .commit();
+                        } else {
+                            ((FragmentActivity) context).getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.topStoryframeLayout, fragment, "topStoryDetail").addToBackStack("topStoryDetail")
+                                    .commit();
+                        }
                     } else {
                         Toast.makeText(context, "No comment for this article", Toast.LENGTH_SHORT).show();
                     }

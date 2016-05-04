@@ -85,21 +85,6 @@
             android:text="Reply"
             android:textStyle="bold" />
 
-        <!--<android.support.v4.widget.NestedScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/reply_nestedScrollView"-->
-        <!--android:layout_marginLeft="50dp"-->
-        <!--android:layout_below="@id/reply"-->
-        <!--android:fillViewport="true">-->
-        <android.widget.FrameLayout
-            android:id="@+id/reply_frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/reply"
-            android:layout_marginLeft="50dp"></android.widget.FrameLayout>
-        <!--</android.support.v4.widget.NestedScrollView>-->
-
     </RelativeLayout>
 
 

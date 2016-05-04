@@ -27,9 +27,16 @@ public class TopStoryListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         TopStoryListFragment topStoryListFragment = new TopStoryListFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.topStoryframeLayout, topStoryListFragment)
-                .commit();
+        if (mTwoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.topStory_detail_container, topStoryListFragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.topStoryframeLayout, topStoryListFragment)
+                    .commit();
+        }
+
 
     }
 

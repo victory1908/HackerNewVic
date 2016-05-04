@@ -1,4 +1,4 @@
-package com.vic.hackernew.Adapter;
+package com.vic.hackernew.TestFunction;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

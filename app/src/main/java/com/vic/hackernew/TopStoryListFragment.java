@@ -46,22 +46,13 @@ public class TopStoryListFragment extends Fragment {
     SwipeRefreshLayout swipeContainer;
     Toolbar toolbar;
     View rootView;
-    private List listTopStoriesId;
+
     private List<TopStory> topStories;
+
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private TopStoryAdapter adapter;
 
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState)
-//    {
-//        if (savedInstanceState != null)
-//        {
-//            // Populate countries from bundle
-//            super.onSaveInstanceState(savedInstanceState);
-//        }
-//    }
 
     public TopStoryListFragment() {
         // Required empty public constructor
@@ -84,8 +75,6 @@ public class TopStoryListFragment extends Fragment {
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
 
-        listTopStoriesId = new ArrayList();
-
         topStories = new ArrayList<>();
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -104,16 +93,14 @@ public class TopStoryListFragment extends Fragment {
 
         requestQueue = CustomVolleyRequest.getInstance(getActivity().getApplicationContext()).getRequestQueue();
 
-//        if (topStories == null) // Updated check
-//        {
-//            getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
-//        }
-//        else
-//        {
-//            // Populate countries by extracting them from saved instance state bundle
-//        }
-
         getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
+
+//        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+//            @Override
+//            public void onRequestFinished(Request<Object> request) {
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -124,14 +111,44 @@ public class TopStoryListFragment extends Fragment {
                 requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
                     @Override
                     public void onRequestFinished(Request<Object> request) {
+//                        adapter.notifyDataSetChanged();
                         if (swipeContainer.isRefreshing()) swipeContainer.setRefreshing(false);
                     }
                 });
             }
         });
 
+
+//        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//                // Triggered only when new data needs to be appended to the list
+//                // Add whatever code is needed to append new items to the bottom of the list
+//                customLoadMoreDataFromApi(page);
+//            }
+//        });
+
+
+
         return rootView;
     }
+
+//    // Append more data into the adapter
+//    // This method probably sends out a network request and appends new data items to your adapter.
+//    public void customLoadMoreDataFromApi(int offset) {
+//        // Send an API request to retrieve appropriate data using the offset value as a parameter.
+//        // Deserialize API response and then construct new objects to append to the adapter
+//        // Add the new objects to the data source for the adapter
+////        topStories.addAll(moreItems);
+//        getTopStoriesListId(requestQueue, Constant.TAG_BASE_URL + Constant.TAG_TOPSTORIES_URL);
+//
+//        // For efficiency purposes, notify the adapter of only the elements that got changed
+//        // curSize will equal to the index of the first element inserted because the list is 0-indexed
+////        int curSize = adapter.getItemCount();
+////        adapter.notifyItemRangeInserted(curSize, topStories.size() - 1);
+//    }
+
+
 
     private void getTopStoriesListId(final RequestQueue requestQueue, String url) {
         progressBar.setVisibility(View.VISIBLE);
@@ -175,11 +192,9 @@ public class TopStoryListFragment extends Fragment {
                         int index = Collections.binarySearch(topStories, topStory);
                         if (index < 0) {
                             index = -index - 1;
-
-                            int prevSize = topStories.size();
                             topStories.add(index, topStory);
-//                            adapter.notifyItemInserted(index);
-                            adapter.notifyItemRangeInserted(prevSize, topStories.size() - prevSize);
+                            int curSize = adapter.getItemCount();
+                            adapter.notifyItemRangeInserted(curSize, topStories.size() - 1);
                         }
                     }
                 },
@@ -193,35 +208,6 @@ public class TopStoryListFragment extends Fragment {
 
         requestQueue.add(jsonObjectRequest);
     }
-
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//    }
-
-
-//        public void onSaveInstanceState(Bundle outState)
-//    {
-//        outState.putStringArrayList(Constant.TAG_TOP_STORY,topStories);
-//    }
-
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        getView().setFocusableInTouchMode(true);
-//        getView().requestFocus();
-//        getView().setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-//                    Log.e("gif--","fragment back key is clicked");
-//                    getActivity().getSupportFragmentManager().popBackStack("topStoryDetail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//    }
 
 
     @Override

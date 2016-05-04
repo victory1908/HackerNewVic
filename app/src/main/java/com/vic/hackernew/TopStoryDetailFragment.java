@@ -97,7 +97,7 @@ public class TopStoryDetailFragment extends Fragment {
 
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_list);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.comment_list_recycleView);
         assert recyclerView != null;
 
         layoutManager = new LinearLayoutManager(getActivity());
@@ -150,18 +150,9 @@ public class TopStoryDetailFragment extends Fragment {
                         int index = Collections.binarySearch(comments, comment);
                         if (index < 0) {
                             index = -index - 1;
-                            int prevSize = comments.size();
                             comments.add(index, comment);
-
-//                            if (comment.getKids()!=null){
-//                                replies.clear();
-//                                for (int i = 0; i < comment.getKids().length; i++) {
-//                                    getReplyDetail(requestQueue, Constant.TAG_BASE_URL + "item/" + comment.getKids()[i] + ".json?print=pretty");
-//                                }
-//                            }
-
-//                            adapter.notifyItemInserted(index);
-                            adapter.notifyItemRangeInserted(prevSize, comments.size() - prevSize);
+                            int curSize = adapter.getItemCount();
+                            adapter.notifyItemRangeInserted(curSize, comments.size() - 1);
                         }
 
                     }
@@ -176,61 +167,6 @@ public class TopStoryDetailFragment extends Fragment {
         jsonObjectRequest.setPriority(Request.Priority.HIGH);
         requestQueue.add(jsonObjectRequest);
     }
-
-//    private void getReplyDetail(RequestQueue requestQueue, String commentUrl) {
-//
-//        progressBar.setVisibility(View.VISIBLE);
-//        CustomJsonObjectRequest jsonObjectRequest = new CustomJsonObjectRequest(Request.Method.GET, commentUrl, null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject respond) {
-//                        progressBar.setVisibility(View.GONE);
-//
-//                        Gson gson = new GsonBuilder().create();
-//                        Comment comment = gson.fromJson(respond.toString(), Comment.class);
-//
-//                        int index = Collections.binarySearch(comments, comment);
-//                        if (index < 0) {
-//                            index = -index - 1;
-//                            replies.add(index, comment);
-//                        }
-//
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-//                        progressBar.setVisibility(View.GONE);
-//                    }
-//                });
-//        jsonObjectRequest.setPriority(Request.Priority.HIGH);
-//        requestQueue.add(jsonObjectRequest);
-//    }
-
-
-//        @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        getView().setFocusableInTouchMode(true);
-//        getView().requestFocus();
-//        getView().setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-//                    Log.e("gif--","fragment back key is clicked");
-//                    Fragment topStoryListfragment = new TopStoryListFragment();
-////                    getActivity().getSupportFragmentManager().popBackStack("topStoryDetail", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                    getActivity().getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.topStory_detail,topStoryListfragment)
-//                            .addToBackStack(null)
-//                            .commit();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//    }
 
     @Override
     public void onResume() {
